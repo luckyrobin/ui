@@ -1,0 +1,14 @@
+{
+    "input": "css/*.css",
+    "output": {
+        "cssDist": "build/css/",
+
+        "imageDist": "../images/",
+
+        "margin": 5,
+
+        "copyUnspriteImage": true,
+
+        "compress":false
+    }
+}
