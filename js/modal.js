@@ -55,82 +55,13 @@
 	}
 
 	Modal.prototype.alert = function(){
-		var _this = this;
-		var _popupWidth = _this.options.width;
-		var _popupHeight = _this.options.height;
-		var _winScrollTop = $(window).scrollTop();
-		var _winHeight = $(window).height();
-		var _docHeight = $(document).height();
-
-		var $tip = _this.tip();
-		var setContent = "<div class='text-center'>"+_this.options.content+"</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>"+_this.options.okvalue+"</button></p>";
-		$tip.find(".sppopwin-content").html(setContent).end().find(".sppopwin-title > h3").text(_this.options.title);
-
-		$tip.css({"width":_this.options.width,"margin-left":-(_popupWidth/2),top:(_winHeight-_popupHeight)/2});
-		
-		if(_this.options.maskLayer){
-			if($tip.nextAll('.popup_mask').length == 0){
-				$("body").append($tip);
-				$tip.after("<div class='popup_mask'></div>");
-				$(".popup_mask").css("height",_docHeight);
-				if ($.browser.msie && $.browser.version <= 6){
-					$(".popup_mask").after("<iframe class='popup_iframe' frameborder='0'></iframe>");
-					$(".popup_iframe").css("height",_docHeight);
-				}
-			}
-			_this.options.callback();
-		}
-		$tip.find(".sppopwin-action-c").one("click",function(){
-			$tip.remove();
-			$(".popup_mask").remove();
-			$(".popup_iframe").remove();
-		});
-		$tip.find(".sppopwin-action-s").one("click",function(){
-			_this.options.ok();
-			$tip.remove();
-			$(".popup_mask").remove();
-			$(".popup_iframe").remove();
-		});
+        var toolbar = "<div class='text-center'>"+this.options.content+"</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>"+this.options.okvalue+"</button></p>";
+        this.pop(toolbar);
 	}
 
 	Modal.prototype.confirm = function(){
-		var _this = this;
-		var _popupWidth = _this.options.width;
-		var _popupHeight = _this.options.height;
-		var _winScrollTop = $(window).scrollTop();
-		var _winHeight = $(window).height();
-		var _docHeight = $(document).height();
-
-		var $tip = _this.tip();
-		var setContent = "<div class='text-center'>"+_this.options.content+"</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>"+_this.options.okvalue+"</button><button class='spbtn spbtn-cancel sppopwin-action-c ml'>"+_this.options.cancelvalue+"</button></p>";
-		$tip.find(".sppopwin-content").html(setContent).end().find(".sppopwin-title > h3").text(_this.options.title);
-
-		$tip.css({"width":_this.options.width,"margin-left":-(_popupWidth/2),top:(_winHeight-_popupHeight)/2});
-		
-		if(_this.options.maskLayer){
-			if($tip.nextAll('.popup_mask').length == 0){
-				$("body").append($tip);
-				$tip.after("<div class='popup_mask'></div>");
-				$(".popup_mask").css("height",_docHeight);
-				if ($.browser.msie && $.browser.version <= 6){
-					$(".popup_mask").after("<iframe class='popup_iframe' frameborder='0'></iframe>");
-					$(".popup_iframe").css("height",_docHeight);
-				}
-				_this.options.callback();
-			}
-		}
-		$tip.find(".sppopwin-action-c").one("click",function(){
-			$tip.remove();
-			$(".popup_mask").remove();
-			$(".popup_iframe").remove();
-			_this.options.cancel();
-		});
-		$tip.find(".sppopwin-action-s").one("click",function(){
-			_this.options.ok();
-			$tip.remove();
-			$(".popup_mask").remove();
-			$(".popup_iframe").remove();
-		});
+        var toolbar = "<div class='text-center'>"+this.options.content+"</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>"+this.options.okvalue+"</button><button class='spbtn spbtn-cancel sppopwin-action-c ml'>"+this.options.cancelvalue+"</button></p>";
+        this.pop(toolbar);
 	}
 
 	Modal.prototype.stringDo = function (whatido) {
@@ -161,6 +92,46 @@
    		return this.$tip = this.$tip || $(this.options.template)
 	}
 
+    Modal.prototype.pop = function (toolbar) {
+        var _this = this;
+        var _popupWidth = _this.options.width;
+        var _popupHeight = _this.options.height;
+        var _winScrollTop = $(window).scrollTop();
+        var _winHeight = $(window).height();
+        var _docHeight = $(document).height();
+
+        var $tip = _this.tip();
+        var setContent = toolbar;
+        $tip.find(".sppopwin-content").html(setContent).end().find(".sppopwin-title > h3").text(_this.options.title);
+
+        $tip.css({"width":_this.options.width,"margin-left":-(_popupWidth/2),top:(_winHeight-_popupHeight)/2});
+
+        if(_this.options.maskLayer){
+            if($tip.nextAll('.popup_mask').length == 0){
+                $("body").append($tip);
+                $tip.after("<div class='popup_mask'></div>");
+                $(".popup_mask").css("height",_docHeight);
+                if ($.browser.msie && $.browser.version <= 6){
+                    $(".popup_mask").after("<iframe class='popup_iframe' frameborder='0'></iframe>");
+                    $(".popup_iframe").css("height",_docHeight);
+                }
+                _this.options.callback();
+            }
+        }
+        $tip.find(".sppopwin-action-c").one("click",function(){
+            $tip.remove();
+            $(".popup_mask").remove();
+            $(".popup_iframe").remove();
+            _this.options.cancel();
+        });
+        $tip.find(".sppopwin-action-s").one("click",function(){
+            _this.options.ok();
+            $tip.remove();
+            $(".popup_mask").remove();
+            $(".popup_iframe").remove();
+        });
+    }
+
 	 $.fn.spmodal = function (option) {
 	 	var options = typeof option == 'object' && option;
 	    return this.each(function () {
@@ -185,4 +156,7 @@
 
 2014/05/14
 1.修复弹窗按钮绑定bug(L122、L128)
+
+2014/06/11
+1.合并pop
 */
