@@ -68,6 +68,8 @@ module.exports = function (grunt) {
             main: {
                 files: [
                     {expand: true, src: ['js/*.js'], dest: 'build/'},
+                    {expand: true, src: ['css/*.css'], dest: 'build/'},
+                    {expand: true, src: ['images/*.*'], dest: 'build/'},
                     {expand: true, src: ['*.html'], dest: 'build/'}
                 ]
             }
@@ -111,5 +113,5 @@ module.exports = function (grunt) {
     grunt.task.registerTask('default', ['less', 'connect', 'watch']);
 
 //    构建task
-    grunt.task.registerTask('build', ['csscomb', 'clean', 'copy', 'spriter']);
+    grunt.task.registerTask('build', ['csscomb', 'clean', 'copy']);
 };
