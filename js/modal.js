@@ -32,7 +32,17 @@
 		cancelvalue:'取消',
 		cancel: function(){},
 		callback: function(){},
-		template: "<div class='sppopwin'><div class='sppopwin-out'><div class='sppopwin-in'><div class='sppopwin-title'><h3></h3> <span class='sppopwin-close sppopwin-action-c'>关闭</span></div><div class='sppopwin-content'></div></div></div></div>"
+		template: "<div class='sppopwin'>" +
+                        "<div class='sppopwin-out'>" +
+                            "<div class='sppopwin-in'>" +
+                                "<div class='sppopwin-title'>" +
+                                    "<h3></h3>" +
+                                    "<span class='sppopwin-close sppopwin-action-c'>关闭</span>" +
+                                "</div>" +
+                                "<div class='sppopwin-content'></div>" +
+                            "</div>" +
+                        "</div>" +
+                    "</div>"
 	}
 
 	Modal.prototype.init = function (type, element, options) {
