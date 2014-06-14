@@ -12,117 +12,87 @@ li,
 h1,
 h2,
 h3,
-h4
-{
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
+h4 {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 body,
 button,
 input,
 select,
-textarea
-{
-    font: 12px Arial, Helvetica, sans-serif;
-
-    color: #333;
+textarea {
+  font: 12px Arial, Helvetica, sans-serif;
+  color: #333;
 }
 input,
 select,
-textarea
-{
-    font-size: 100%;
+textarea {
+  font-size: 100%;
 }
-a
-{
-    text-decoration: none;
-
-    color: #333;
+a {
+  text-decoration: none;
+  color: #333;
 }
-a:hover
-{
-    text-decoration: none;
-
-    color: #c00;
+a:hover {
+  text-decoration: none;
+  color: #c00;
 }
-a.blue_link
-{
-    color: #06c;
+a.blue_link {
+  color: #06c;
 }
-a.blue_link:hover
-{
-    color: #f60;
+a.blue_link:hover {
+  color: #f60;
 }
-.clearfix
-{
-    *zoom: 1;
+.clearfix {
+  *zoom: 1;
 }
-.clearfix:after
-{
-    font-size: 0;
-    line-height: 0;
-
-    display: block;
-    visibility: hidden;
-    clear: both;
-
-    height: 0;
-
-    content: '.';
+.clearfix:after {
+  display: block;
+  content: ".";
+  height: 0;
+  visibility: hidden;
+  clear: both;
+  font-size: 0;
+  line-height: 0;
 }
-img
-{
-    vertical-align: top;
-
-    border: 0 none;
+img {
+  border: 0 none;
+  vertical-align: top;
 }
-em
-{
-    font-style: normal;
+em {
+  font-style: normal;
 }
-button::-moz-focus-inner
-{
-    padding: 0;
-
-    border: none;
+button::-moz-focus-inner {
+  padding: 0;
+  border: none;
 }
-.wrap
-{
-    width: 980px;
-    margin: 0 auto;
+.wrap {
+  margin: 0 auto;
+  width: 980px;
 }
-.fl
-{
-    float: left;
+.fl {
+  float: left;
 }
-.fr
-{
-    float: right;
+.fr {
+  float: right;
 }
-.mt
-{
-    margin-top: 10px;
+.mt {
+  margin-top: 10px;
 }
-.ml
-{
-    margin-left: 10px;
+.ml {
+  margin-left: 10px;
 }
-.mt5
-{
-    margin-top: 5px;
+.mt5 {
+  margin-top: 5px;
 }
-.mt10
-{
-    margin-top: 10px;
+.mt10 {
+  margin-top: 10px;
 }
-.mb
-{
-    margin-bottom: 10px;
+.mb {
+  margin-bottom: 10px;
 }
-.none
-{
-    display: none;
+.none {
+  display: none;
 }
 /*# sourceMappingURL=base.css.map */
