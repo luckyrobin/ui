@@ -4,17 +4,17 @@ function robinpop(options) {
 }
 
 robinpop.prototype.DEFAULTS = {
-    title: '标题',
+    title: 'title',
     mode: 'normal',
-    content: '你确定么？',
+    content: 'are you sure',
     width: 360,
     height: 190,
     closed: false,
     maskLayer: true,
-    okvalue: '确认',
+    okvalue: 'OK',
     ok: function () {
     },
-    cancelvalue: '取消',
+    cancelvalue: 'Cancel',
     cancel: function () {
     },
     callback: function () {
@@ -33,15 +33,65 @@ robinpop.prototype.DEFAULTS = {
 }
 robinpop.prototype.init = function (options) {
     this.options = this.getOptions(options);
+    this.generate();
 }
 robinpop.prototype.getDefaults = function () {
     return this.DEFAULTS;
 }
 robinpop.prototype.getOptions = function (options) {
     options = extend({}, this.getDefaults(), options);
-    console.log(options);
+    return options;
+}
+robinpop.prototype.generate = function(){
+    this.pop();
+}
+robinpop.prototype.pop = function(toolbar) {
+    var _this = this;
+    var _popWidth = this.options.width;
+    var _popHeight = this.options.height;
+    var _winHeight = height(document);
+
+    var $tip = _this.tip();
+    var setContent = toolbar;
+    var popBody = getElementsByClass($tip,'sppopwin-content')[0];
+    console.log(popBody);
+    getElementsByClass($tip,'sppopwin-content')[0].innerHTML = setContent;
+    //getElementsByClass($tip,'sppopwin-title')[0].getElementsByTagName('h3')[0].innerText = _this.options.title;
+    console.log(getElementsByClass($tip,'sppopwin-title')[0]);
+}
+robinpop.prototype.tip = function () {
+    var DOM = document.createElement('div');
+    DOM.innerHTML=(this.options.template);
+    return this.$tip = this.$tip || DOM.childNodes[0];
 }
 /*tool function*/
+function height(obj){
+    var _objHeight = 0;
+    if(obj === undefined)return undefined;
+    switch(obj.nodeType) {
+        case 1:
+        _objHeight = obj.offsetHeight;
+        break;
+        case 9:
+        _objHeight = obj.documentElement.clientHeight;
+        break;
+        default:
+        _objHeight = undefined;
+    }
+    return _objHeight;
+}
+function getElementsByClass(parent,classname){
+    var _result = [];
+    var _curobj = parent.getElementsByTagName('*');
+    for (var i = 0; i < _curobj.length; i++) {
+    	if((_curobj[i].className).search(classname) != -1){
+    		_result.push(_curobj[i]);
+    	} else {
+    		continue;
+    	}
+    };
+    return _result;
+}
 function extend() {
     var _result = {};
     var _extend = function me(dest, source) {
