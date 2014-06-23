@@ -52,12 +52,12 @@ robinpop.prototype.pop = function(toolbar) {
     var _winHeight = height(document);
 
     var $tip = _this.tip();
-    var setContent = toolbar;
+    var setContent = 'toolbar';
     var popBody = getElementsByClass($tip,'sppopwin-content')[0];
-    console.log(popBody);
-    getElementsByClass($tip,'sppopwin-content')[0].innerHTML = setContent;
-    //getElementsByClass($tip,'sppopwin-title')[0].getElementsByTagName('h3')[0].innerText = _this.options.title;
-    console.log(getElementsByClass($tip,'sppopwin-title')[0]);
+    popBody.innerHTML = setContent;
+    getElementsByClass($tip,'sppopwin-title')[0].getElementsByTagName('h3')[0].innerText = _this.options.title;
+    console.log(css($tip,{"width": (_this.options.width)+'px', "marginLeft": -(_popWidth / 2)+'px'}));
+    console.log($tip);
 }
 robinpop.prototype.tip = function () {
     var DOM = document.createElement('div');
@@ -65,6 +65,28 @@ robinpop.prototype.tip = function () {
     return this.$tip = this.$tip || DOM.childNodes[0];
 }
 /*tool function*/
+function css(obj,key,value){
+	var _arr = arguments;
+
+	var _get = function(){
+
+	}
+
+	var _set = function(){
+
+	}
+	if(_arr.length==2){
+		if(_arr[1] instanceof Object){
+			for(var name in key){
+				console.log(name ,key[name]);
+				obj.style[name] = key[name];
+			}
+		}else{
+			return getComputedStyle(obj,null)[key];
+		}
+	}
+}
+
 function height(obj){
     var _objHeight = 0;
     if(obj === undefined)return undefined;
