@@ -51,14 +51,6 @@ module.exports = function (grunt) {
             },
             dev: {
                 options: {
-                    middleware: function (connect, op) {
-                        return [
-                            // Serve static files.
-                            connect.static(op.base),
-                            // Make empty directories browsable.
-                            connect.directory(op.base)
-                        ];
-                    }
                 }
             }
         },
