@@ -1,22 +1,23 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="charset=UTF-8">
-    <title>价格管理</title>
+    <title>demo</title>
     <link rel="Stylesheet" type="text/css" href="css/base.css">
     <link rel="Stylesheet" type="text/css" href="css/style.css">
     <style>
-        pre{
-            background: #eee;
-        }
+    pre {
+        background: #eee;
+    }
     </style>
 </head>
 
 <body style="height:2000px">
-<!--头部S-->
-<div class="container">
+    <!--头部S-->
+    <div class="container">
 
-    <div class="contents clearfix">
+        <div class="contents clearfix">
             <a href="http://www.google.com">google</a>
             <a href="javascript:;" id="text" class="ml blue_link">弹窗</a>
             <pre>
@@ -117,7 +118,8 @@
                 <div class="sptooltip-content none">
                     <div>
                         <img src="pic/60x60.jpg" alt="">
-                        <p>这里可写任何<a href="http://www.baidu.com">dom</a></p>
+                        <p>这里可写任何<a href="http://www.baidu.com">dom</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -151,101 +153,83 @@
                      placement: 'left'
                 });
             </pre>
-    </div>
+        </div>
 
-</div>
-<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="js/modal.js"></script>
-<script type="text/javascript" src="js/tooltip.js"></script>
-<script type="text/javascript">
-    $(function(){
+    </div>
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="js/modal.js"></script>
+    <script type="text/javascript" src="js/tooltip.js"></script>
+    <script type="text/javascript">
+    $(function() {
         $("#text").click(function(event) {
-            $("body").spmodal(
-                {
-                    title:"提示",
-                    mode:"confirm",
-                    content:"你会唱小星星吗？",
-                    ok:function(){
-                        alert("ok");
-                    }
+            $("body").spmodal({
+                title: "提示",
+                mode: "confirm",
+                content: "你会唱小星星吗？",
+                ok: function() {
+                    alert("ok");
                 }
-            );
-         });
+            });
+        });
 
         $("#text02").click(function(event) {
-            $("body").spmodal(
-                {
-                    title:"600宽度",
-                    width:600,
-                    mode:"confirm",
-                    content:"你会唱小星星吗？",
-                    ok:function(){
-                        alert("ok");
-                    }
+            $("body").spmodal({
+                title: "600宽度",
+                width: 600,
+                mode: "confirm",
+                content: "你会唱小星星吗？",
+                ok: function() {
+                    alert("ok");
                 }
-            );
-         });
+            });
+        });
 
         $("#text03").click(function(event) {
-            $("body").spmodal(
-                {
-                    title:"警告",
-                    mode:"alert",
-                    okvalue:"文字可改变",
-                    content:"你会唱小星星吗？",
-                    ok:function(){
-                        alert("ok");
-                    }
+            $("body").spmodal({
+                title: "警告",
+                mode: "alert",
+                okvalue: "文字可改变",
+                content: "你会唱小星星吗？",
+                ok: function() {
+                    alert("ok");
                 }
-            );
-         });
+            });
+        });
 
         $("#texttemplate").on('click', function(event) {
             var temp = $("#stocksure").html();
-            $("body").spmodal(
-                {
-                    title:"我是一个标题",
-                    mode:"alert",
-                    okvalue:"知道了",
-                    content:temp,
-                    template: "<div class='sppopwin'>"
-                            +   "<div class='sppopwin-out'>"
-                            +      "<div class='sppopwin-in'>"
-                            +          "<span class='sppopwin-close sppopwin-action-c'>"
-                            +           "</span>"
-                            +          "<div class='sppopwin-content'>"
-                            +          "</div>"
-                            +      "</div>"
-                            +   "</div>"
-                            +   "</div>"
-                }
-            );
+            $("body").spmodal({
+                title: "我是一个标题",
+                mode: "alert",
+                okvalue: "知道了",
+                content: temp,
+                template: "<div class='sppopwin'>" + "<div class='sppopwin-out'>" + "<div class='sppopwin-in'>" + "<span class='sppopwin-close sppopwin-action-c'>" + "</span>" + "<div class='sppopwin-content'>" + "</div>" + "</div>" + "</div>" + "</div>"
+            });
         });
 
         $("#textDOM").click(function(event) {
-            $("body").spmodal(
-                {
-                    title:"标题标题标题",
-                    mode:"confirm",
-                    content: $(".textDOM01").html(),
-                    ok:function(){
-                        alert("ok");
-                    }
+            $("body").spmodal({
+                title: "标题标题标题",
+                mode: "confirm",
+                content: $(".textDOM01").html(),
+                ok: function() {
+                    alert("ok");
                 }
-            );
+            });
         });
         $(".spicon-wenhao").sptooltip();
         console.log($(".ifdemo").sptooltip());
         $(".tooltips-bottom").sptooltip({
-             placement: 'bottom'
+            placement: 'bottom'
         });
         $(".tooltips-right").sptooltip({
-             placement: 'right'
+            placement: 'right'
         });
         $(".tooltips-left").sptooltip({
-             placement: 'left'
+            placement: 'left'
         });
     })
-</script>
+    </script>
 </body>
+
 </html>
