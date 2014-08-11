@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="charset=UTF-8">
+    <title>demo</title>
+    <style>
+    pre {
+        background: #eee;
+    }
+    </style>
+</head>
+
+<body style="height:2000px">
+    <!--头部S-->
+    <div class="container">
+
+        <div class="contents container clearfix">
+            <a href="javascript:;" id="text" class="ml blue_link">弹窗</a>
+            <pre>
+                    $("body").spmodal(
+                        {
+                            title:"提示",
+                            mode:"confirm",
+                            content:"你会唱小星星吗？",
+                            ok:function(){
+                                alert("ok");
+                            },
+                            cancel:function(){
+                                alert("关闭");
+                            }
+                        }
+                    );
+            </pre>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/robinpop.js"></script>
+    <script type="text/javascript">
+    window.onload = function() {
+        document.getElementById("text").addEventListener('click', function() {
+            new robinpop({
+                title: "提示",
+                mode: "confirm",
+                content: "你会唱小星星吗？",
+                ok: function() {
+                    alert("ok");
+                },
+                cancel: function() {
+                    alert("关闭");
+                }
+            });
+        });
+    }
+    </script>
+</body>
+
+</html>

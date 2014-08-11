@@ -23,7 +23,7 @@
         title: '标题',
         mode: 'normal',
         content: '你确定么？',
-        width: 412,
+        width: 360,
         height: 190,
         closed: false,
         maskLayer: true,
@@ -49,7 +49,7 @@
     }
 
     Modal.prototype.init = function (type, element, options) {
-        /*      if (options instanceof Array) {
+        /*		if (options instanceof Array) {
          for (var i = 0; i < options.length; i++) {
          this.stringDo(options[i]);
          };
@@ -70,12 +70,12 @@
     }
 
     Modal.prototype.alert = function () {
-        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='sppopwin-bottom-toolbar'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button></p>";
+        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button></p>";
         this.pop(toolbar);
     }
 
     Modal.prototype.confirm = function () {
-        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='sppopwin-bottom-toolbar'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button><button class='spbtn spbtn-cancel sppopwin-action-c ml'>" + this.options.cancelvalue + "</button></p>";
+        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button><button class='spbtn spbtn-cancel sppopwin-action-c ml'>" + this.options.cancelvalue + "</button></p>";
         this.pop(toolbar);
     }
 
@@ -131,11 +131,7 @@
         var setContent = toolbar;
         $tip.find(".sppopwin-content").html(setContent).end().find(".sppopwin-title > h3").text(_this.options.title);
 
-        $tip.css({
-            "width": _this.options.width,
-            "margin-left": -(_popupWidth / 2),
-            top: (_winHeight - _popupHeight) / 2
-        });
+        $tip.css({"width": _this.options.width, "margin-left": -(_popupWidth / 2), top: (_winHeight - _popupHeight) / 2});
         $("body").append($tip);
         if (_this.options.maskLayer) {
             if ($tip.nextAll('.popup_mask').length == 0) {
@@ -148,6 +144,7 @@
             }
         }
         _this.options.callback();
+
         $tip.find(".sppopwin-action-c").on("click", function () {
             var fn = _this.options.cancel;
             return typeof fn !== 'function' || fn.call(this) !== false ?
@@ -191,7 +188,4 @@
  2014/06/12
  1.可控制弹窗是否关闭
  2.修复遮罩bug
-
- 2014/07/24
- 1.加入normal无toolbar模式
  */

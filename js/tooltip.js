@@ -1,20 +1,20 @@
 (function($) {
     var Tooltip = function(element, options) {
-        this.type =
-            this.options =
-            this.enabled =
-            this.$element = null
-        this.timer = null
+            this.type =
+                this.options =
+                this.enabled =
+                this.$element = null
+            this.timer = null
 
-        this.init('tooltip', element, options)
-    }
-    /**
-     * 基本参数设置
-     * @param isautohide 是否自动关闭
-     * @param placement 箭头方向  'bottom'|'top'|'right'|'left'
-     * @param trigger 触发方式 'click'|'hover'|'focus'
-     * @param template 内容模板
-     */
+            this.init('tooltip', element, options)
+        }
+        /**
+         * 基本参数设置
+         * @param isautohide 是否自动关闭
+         * @param placement 箭头方向  'bottom'|'top'|'right'|'left'
+         * @param trigger 触发方式 'click'|'hover'|'focus'
+         * @param template 内容模板
+         */
     Tooltip.DEFAULTS = {
         isautohide: true,
         placement: 'top',
@@ -37,17 +37,18 @@
             var trigger = triggers[i]
 
             if (trigger == 'click') {
-                this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.generate, this))
+                this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.generate, this));
             } else if (trigger != 'manual') {
                 var eventIn = trigger == 'hover' ? 'mouseenter' : 'focusin'
                 var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
                 var _this = this;
 
-               setTimeout(function(){
-                _this.$element.on(eventIn + '.' + _this.type, _this.options.selector, $.proxy(_this.generate, _this))
-               },0)
-                this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.destroy, this))
-
+                setTimeout(function() {
+                    _this.$element.on(eventIn + '.' + _this.type, _this.options.selector, $.proxy(_this.generate, _this))
+                }, 0);
+                if (this.options.isautohide) {
+                    this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.destroy, this))
+                }
             }
         }
 
@@ -88,8 +89,13 @@
         } else {
             return false;
         }
-        if (!this.$element.children().hasClass('sptooltip')) {
+        /*        if (!this.$element.children().hasClass('sptooltip')) {
             this.$element.append($tip)
+        } else {
+            return;
+        }*/
+        if (!$("body").hasClass('sptooltip')) {
+            $("body").append($tip)
         } else {
             return;
         }
@@ -97,19 +103,49 @@
 
     Tooltip.prototype.generate = function() {
         clearTimeout(this.timer);
-        var oHeight = this.$element.height(),
-            oWidth = null;
+        var _this = this;
+        eleHeight = this.$element.height(),
+        oWidth = null,
+        oHeight = null,
+        resultTop = 0,
+        resultLeft = 0;
 
         this.show();
 
         if (this.hasContent()) {
             oWidth = this.tip().outerWidth(true);
+            oHeight = this.tip().outerHeight();
         }
-        var resultTop = Math.round(this.$element.offset().top - $(window).scrollTop() + oHeight);
-        var resultLeft = Math.round(this.$element.offset().left + this.$element.width() / 2 - $(window).scrollLeft() - oWidth / 2);
+        switch (this.options.placement) {
+            case 'top':
+                resultTop = Math.round(this.$element.offset().top - $(window).scrollTop() + eleHeight);
+                resultLeft = Math.round(this.$element.offset().left + this.$element.outerWidth() / 2 - $(window).scrollLeft() - oWidth / 2);
+                break;
+            case 'bottom':
+                resultTop = Math.round(this.$element.offset().top - $(window).scrollTop() - this.tip().outerHeight() - eleHeight);
+                resultLeft = Math.round(this.$element.offset().left + this.$element.outerWidth() / 2 - $(window).scrollLeft() - oWidth / 2);
+                break;
+            case 'right':
+                resultTop = Math.round(this.$element.offset().top - $(window).scrollTop() - oHeight / 2);
+                resultLeft = Math.round(this.$element.offset().left + this.$element.outerWidth() - $(window).scrollLeft());
+                break;
+            case 'left':
+                resultTop = Math.round(this.$element.offset().top - $(window).scrollTop() - oHeight / 2);
+                resultLeft = Math.round(this.$element.offset().left - $(window).scrollLeft() - oWidth);
+                break;
+        }
         this.tip().css({
             top: resultTop,
             left: resultLeft
+        });
+
+        this.tip().one({
+            'mouseenter': function() {
+                clearTimeout(_this.timer);
+            },
+            'mouseleave': function() {
+                _this.destroy();
+            }
         });
     }
 
@@ -128,7 +164,7 @@
         var options = typeof option == 'object' && option;
         return this.each(function() {
             var $this = $(this)
-            //new Tooltip(this, options);
+                //new Tooltip(this, options);
             if (typeof option == 'string') {
                 new Tooltip(this)[option]();
             } else {
@@ -148,4 +184,9 @@
 
 2014/05/13
 1.修复插入dom中链接在ff或者ie下无法跳转的问题(45行)
+
+2014/08/05
+1.加入了左右方向箭头。
+2.绑定延迟事件。
+3.加入了isautohide
 */
