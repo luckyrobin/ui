@@ -92,13 +92,13 @@ function getStyle(obj,key)
 
 function height(obj){
     var _objHeight = 0;
-    if(obj === undefined)return undefined;
+    if(!obj) return;
     switch(obj.nodeType) {
         case 1:
         _objHeight = obj.offsetHeight;
         break;
         case 9:
-        _objHeight = obj.documentElement.clientHeight;
+        _objHeight = obj.documentElement.clientHeight || obj.body.clientHeight;
         break;
         default:
         _objHeight = undefined;
