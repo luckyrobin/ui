@@ -67,23 +67,26 @@ robinpop.prototype.tip = function () {
 /*tool function*/
 function css(obj,key,value){
 	var _arr = arguments;
-
-	var _get = function(){
-
-	}
-
-	var _set = function(){
-
-	}
 	if(_arr.length==2){
-		if(_arr[1] instanceof Object){
-			for(var name in key){
-				console.log(name ,key[name]);
-				obj.style[name] = key[name];
-			}
-		}else{
-			return getComputedStyle(obj,null)[key];
-		}
+		return getStyle(obj,key);
+	}
+	else if(_arr.length==3)
+	{
+		obj.style[key] = value;	
+	}
+}
+/**
+ *  new add function , it use Compatible IE for get computed style
+**/
+function getStyle(obj,key)
+{
+	if（obj.currentStyle)
+	{
+		return obj.currentStyle[key];	
+	}
+	else
+	{
+		return getComputedStyle(obj,null)[key]
 	}
 }
 
