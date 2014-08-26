@@ -1,0 +1,53 @@
+@btnSize: 3px 15px;
+.spbtn {
+  display: inline-block;
+  padding: @btnSize;
+  margin-bottom: 0;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.428571429;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  &.size-s {
+    padding: 2px 8px;
+  }
+  &.size-b {
+    padding: 3px 25px;
+  }
+  &.spbtn-sure {
+    background-color: #F99A34;
+    color: #FFF;
+    font-weight: bold;
+    &:hover {
+      color: #fff;
+      background-color: #FBB76C;
+    }
+  }
+  &.spbtn-cancel {
+    background-color: #E7E7E7;
+    color: #666;
+    font-weight: bold;
+    &:hover {
+      color: #999;
+      background-color: #e1e1e1;
+    }
+  }
+  &.spbtn-save {
+    background-color: #FEEAC9;
+    color: #F87200;
+    font-weight: normal;
+    &:hover {
+      color: #FF8520;
+      background-color: #FEF0DA;
+    }
+  }
+}

@@ -1,0 +1,109 @@
+.sptooltip {
+  /*s*/
+  .arrow-vertical() {
+    left: 50%;
+    height: 7px;
+    width: 12px;
+    margin-left: -6px;
+  }
+  .arrow-horizontal() {
+    top: 50%;
+    height: 12px;
+    width: 7px;
+    margin-left: -6px;
+    margin-top: -6px;
+  }
+  /*e*/
+  display: block;
+  position: fixed;
+  top: 10px;
+  left: 20px;
+  z-index: 1030;
+  margin: 7px;
+  line-height: 16px;
+  color: #ccc;
+  font-size: 12px;
+  &.in {
+    opacity: .9;
+    filter: alpha(opacity=90)
+  }
+  &-inner {
+    max-width: 300px;
+    padding: 10px 8px;
+    color: #666;
+    text-align: left;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #CCC;
+    box-shadow: 0 0 3px #ddd;
+  }
+  &-arrow {
+    position: absolute;
+    overflow: hidden;
+    font-style: normal;
+    font-family: simsun;
+    font-size: 12px;
+    text-shadow: 0 0 2px #ccc;
+    > em, > i {
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-style: normal;
+    }
+    em {
+      color: #ccc;
+    }
+    i {
+      color: #fff;
+      text-shadow: none;
+    }
+  }
+  &.bottom {
+    .sptooltip-arrow {
+      .arrow-vertical();
+      bottom: -6px;
+      > i {
+        top: -9px;
+      }
+      > em {
+        top: -8px;
+      }
+    }
+  }
+  &.top {
+    .sptooltip-arrow {
+      .arrow-vertical();
+      top: -6px;
+      > i {
+        top: 0px;
+      }
+      > em {
+        top: -1px;
+      }
+    }
+  }
+  &.right {
+    .sptooltip-arrow {
+      .arrow-horizontal();
+      left: 1px;
+      > i {
+        left: 1px;
+      }
+      > em {
+        left: 0px;
+      }
+    }
+  }
+  &.left {
+    .sptooltip-arrow {
+      .arrow-horizontal();
+      right: -6px;
+      > i {
+        left: -6px;
+      }
+      > em {
+        left: -5px;
+      }
+    }
+  }
+}

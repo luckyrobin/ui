@@ -1,0 +1,87 @@
+.sppopwin {
+  position: fixed;
+  _position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 900;
+  width: 360px;
+  display: none;
+  .sppopwin-out {
+    border: 5px solid #cccccc;
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+  .sppopwin-in {
+    position: relative;
+    border: 1px solid #E1E1E1;
+    background: #fff;
+  }
+  .sppopwin-title {
+    height: 45px;
+    line-height: 45px;
+    background: #fff;
+    border: none;
+    > h3 {
+      height: 45px;
+      margin: 0 10px;
+      padding: 0;
+      padding-left: 15px;
+      line-height: 40px;
+      background: url(../images/spwin_title.png) 0 bottom repeat-x;
+      color: #333;
+      font-size: 14px;
+      font-family: 'Microsoft YaHei', Tahoma, sans-serif;
+    }
+  }
+  .sppopwin-content {
+    padding: 20px 10px 40px 10px;
+  }
+  .sppopwin-close {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    overflow: hidden;
+    background: url(../images/popwin-close.png) no-repeat;
+    cursor: pointer;
+    -webkit-transition: 0.4s ease;
+    -moz-transition: 0.4s ease;
+    transition: 0.4s ease;
+    -webkit-transition-property: transform;
+    -moz-transition-property: transform;
+    transition-property: transform;
+  }
+  .sppopwin-close:hover {
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    transform: scale(1.2);
+    background-position: 0 -10px;
+  }
+  .sppopwin-bottom-toolbar {
+    text-align: center;
+    margin-top: 20px;
+  }
+}
+
+.popup_mask {
+  position: fixed;
+  _position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 810;
+  width: 100%;
+  background-color: #000;
+  filter: alpha(opacity=30);
+  opacity: 0.3;
+}
+
+.popup_iframe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 800;
+  width: 100%;
+  background-color: #000;
+  filter: alpha(opacity=30);
+  opacity: 0.3;
+}

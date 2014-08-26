@@ -12,15 +12,11 @@
   },
   "dependencies": {
     "grunt": "*",
-    "yhd-grunt-less": "*",
+    "grunt-contrib-less": "*",
     "grunt-csscomb": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-connect": "*",
     "grunt-contrib-copy": "*",
-    "grunt-contrib-clean": "*",
-    "ispriter": "*"
-  },
-  "devDependencies": {
-    "grunt": "*"
+    "grunt-contrib-clean": "*"
   }
 }

@@ -1,20 +1,20 @@
-(function ($) {
-    var Tooltip = function (element, options) {
-        this.type =
-            this.options =
+(function($) {
+    var Tooltip = function(element, options) {
+            this.type =
+                this.options =
                 this.enabled =
-                    this.$element = null;
-        this.timer = null;
+                this.$element = null;
+            this.timer = null;
 
-        this.init('tooltip', element, options);
-    };
-    /**
-     * 基本参数设置
-     * @param isautohide 是否自动关闭
-     * @param placement 箭头方向  'bottom'|'top'|'right'|'left'
-     * @param trigger 触发方式 'click'|'hover'|'focus'
-     * @param template 内容模板
-     */
+            this.init('tooltip', element, options);
+        };
+        /**
+         * 基本参数设置
+         * @param isautohide 是否自动关闭
+         * @param placement 箭头方向  'bottom'|'top'|'right'|'left'
+         * @param trigger 触发方式 'click'|'hover'|'focus'
+         * @param template 内容模板
+         */
     Tooltip.DEFAULTS = {
         isautohide: true,
         placement: 'top',
@@ -25,7 +25,7 @@
 
     };
 
-    Tooltip.prototype.init = function (type, element, options) {
+    Tooltip.prototype.init = function(type, element, options) {
         this.enabled = true;
         this.type = type;
         this.$element = $(element);
@@ -43,9 +43,9 @@
                 var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout';
                 var _this = this;
 
-                setTimeout(function () {
+                setTimeout(function() {
                     _this.$element.on(eventIn + '.' + _this.type, _this.options.selector, $.proxy(_this.generate, _this));
-                }, 0);
+                },0);
                 if (this.options.isautohide) {
                     this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.destroy, this));
                 }
@@ -55,11 +55,12 @@
     };
 
 
-    Tooltip.prototype.getDefaults = function () {
+
+    Tooltip.prototype.getDefaults = function() {
         return Tooltip.DEFAULTS;
     };
 
-    Tooltip.prototype.getOptions = function (options) {
+    Tooltip.prototype.getOptions = function(options) {
         options = $.extend({}, this.getDefaults(), options);
 
         if (options.delay && typeof options.delay == 'number') {
@@ -72,7 +73,7 @@
         return options;
     };
 
-    Tooltip.prototype.hasContent = function () {
+    Tooltip.prototype.hasContent = function() {
         var obj_content = this.$element.siblings('.sptooltip-content');
         if (obj_content.hasClass('sptooltip-content')) {
             return obj_content;
@@ -81,7 +82,7 @@
         }
     };
 
-    Tooltip.prototype.show = function () {
+    Tooltip.prototype.show = function() {
         var $tip = this.tip();
         if (this.hasContent()) {
             $tip.addClass(this.options.placement).find(".sptooltip-inner").html(this.hasContent().html());
@@ -89,10 +90,10 @@
             return false;
         }
         /*        if (!this.$element.children().hasClass('sptooltip')) {
-         this.$element.append($tip)
-         } else {
-         return;
-         }*/
+            this.$element.append($tip)
+        } else {
+            return;
+        }*/
         if (!$("body").hasClass('sptooltip')) {
             $("body").append($tip);
         } else {
@@ -100,14 +101,14 @@
         }
     };
 
-    Tooltip.prototype.generate = function () {
+    Tooltip.prototype.generate = function() {
         clearTimeout(this.timer);
         var _this = this,
-            eleHeight = this.$element.height(),
-            oWidth = null,
-            oHeight = null,
-            resultTop = 0,
-            resultLeft = 0;
+        eleHeight = this.$element.height(),
+        oWidth = null,
+        oHeight = null,
+        resultTop = 0,
+        resultLeft = 0;
 
         this.show();
 
@@ -139,31 +140,31 @@
         });
 
         this.tip().one({
-            'mouseenter': function () {
+            'mouseenter': function() {
                 clearTimeout(_this.timer);
             },
-            'mouseleave': function () {
+            'mouseleave': function() {
                 _this.destroy();
             }
         });
     };
 
-    Tooltip.prototype.destroy = function () {
+    Tooltip.prototype.destroy = function() {
         var _this = this;
-        _this.timer = setTimeout(function () {
+        _this.timer = setTimeout(function() {
             _this.tip().remove();
         }, 30);
     };
 
-    Tooltip.prototype.tip = function () {
+    Tooltip.prototype.tip = function() {
         return this.$tip = this.$tip || $(this.options.template);
     };
 
-    $.fn.sptooltip = function (option) {
+    $.fn.spcalendar = function(option) {
         var options = typeof option == 'object' && option;
-        return this.each(function () {
+        return this.each(function() {
             var $this = $(this);
-            //new Tooltip(this, options);
+                //new Tooltip(this, options);
             if (typeof option == 'string') {
                 new Tooltip(this)[option]();
             } else {
@@ -173,19 +174,3 @@
     };
 
 })(jQuery);
-
-/*edit log
- 2014/04/24
- 1.修改 placement 默认值 为 top(20行)
- 2.加入元素宽度计算 this.$element.width()/2 (106行)
- 3.修正tip箭头位置计算不精确问题 this.tip().outerWidth(true)(103行)
- 4.修正tip延迟隐藏毫秒数 200->30(117行)
-
- 2014/05/13
- 1.修复插入dom中链接在ff或者ie下无法跳转的问题(45行)
-
- 2014/08/05
- 1.加入了左右方向箭头。
- 2.绑定延迟事件。
- 3.加入了isautohide
- */

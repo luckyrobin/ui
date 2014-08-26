@@ -3,8 +3,8 @@
         this.options = options;
         this.$element = $(element);
 
-        this.init('modal', element, options)
-    }
+        this.init('modal', element, options);
+    };
     /**
      * 基本参数设置
      * @param title 标题
@@ -23,7 +23,7 @@
         title: '标题',
         mode: 'normal',
         content: '你确定么？',
-        width: 360,
+        width: 412,
         height: 190,
         closed: false,
         maskLayer: true,
@@ -36,27 +36,27 @@
         callback: function () {
         },
         template: "<div class='sppopwin'>" +
-            "<div class='sppopwin-out'>" +
-            "<div class='sppopwin-in'>" +
-            "<div class='sppopwin-title'>" +
-            "<h3></h3>" +
-            "<span class='sppopwin-close sppopwin-action-c'>关闭</span>" +
-            "</div>" +
-            "<div class='sppopwin-content'></div>" +
-            "</div>" +
-            "</div>" +
-            "</div>"
-    }
+        "<div class='sppopwin-out'>" +
+        "<div class='sppopwin-in'>" +
+        "<div class='sppopwin-title'>" +
+        "<h3></h3>" +
+        "<span class='sppopwin-close sppopwin-action-c'>关闭</span>" +
+        "</div>" +
+        "<div class='sppopwin-content'></div>" +
+        "</div>" +
+        "</div>" +
+        "</div>"
+    };
 
     Modal.prototype.init = function (type, element, options) {
-        /*		if (options instanceof Array) {
+        /*      if (options instanceof Array) {
          for (var i = 0; i < options.length; i++) {
          this.stringDo(options[i]);
          };
          };*/
-        this.enabled = true
-        this.type = type
-        this.$element = $(element)
+        this.enabled = true;
+        this.type = type;
+        this.$element = $(element);
         this.options = this.getOptions(options);
 
         var mode = this.options.mode;
@@ -67,125 +67,125 @@
         } else {
             this.normal();
         }
-    }
+    };
 
     Modal.prototype.alert = function () {
-        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button></p>";
+        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='sppopwin-bottom-toolbar'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button></p>";
         this.pop(toolbar);
-    }
+    };
 
     Modal.prototype.confirm = function () {
-        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='text-center mt30'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button><button class='spbtn spbtn-cancel sppopwin-action-c ml'>" + this.options.cancelvalue + "</button></p>";
+        var toolbar = "<div class='text-center'>" + this.options.content + "</div><p class='sppopwin-bottom-toolbar'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button><button class='spbtn spbtn-cancel sppopwin-action-c ml'>" + this.options.cancelvalue + "</button></p>";
         this.pop(toolbar);
-    }
+    };
 
     Modal.prototype.normal = function () {
         var toolbar = "<div class='text-center'>" + this.options.content + "</div>";
         this.pop(toolbar);
-    }
+    };
 
     Modal.prototype.stringDo = function (whatido) {
         switch (whatido) {
             case "open":
                 break;
         }
-    }
+    };
 
     Modal.prototype.getDefaults = function () {
-        return Modal.DEFAULTS
-    }
+        return Modal.DEFAULTS;
+    };
 
     Modal.prototype.getOptions = function (options) {
-        options = $.extend({}, this.getDefaults(), options)
+        options = $.extend({}, this.getDefaults(), options);
 
         if (options.delay && typeof options.delay == 'number') {
             options.delay = {
                 show: options.delay,
                 hide: options.delay
-            }
+            };
         }
 
-        return options
-    }
+        return options;
+    };
 
     Modal.prototype.tip = function () {
-        return this.$tip = this.$tip || $(this.options.template)
-    }
+        return this.$tip = this.$tip || $(this.options.template);
+    };
 
     Modal.prototype.close = function () {
         var $tip = this.tip();
-        $(".popup_mask").remove();
-        $(".popup_iframe").remove();
-        return $tip.remove();
-    }
+        $(window).unbind('.popresize');
+        $tip.fadeOut(300, function () {
+            $(".popup_mask").remove();
+            $(".popup_iframe").remove();
+            return $tip.remove();
+        });
+    };
 
-    Modal.prototype.pop = function (toolbar) {
-        var _this = this;
-        var _popupWidth = _this.options.width;
-        var _popupHeight = _this.options.height;
+    Modal.prototype.resize = function () {
+        var _popupWidth = this.options.width;
+        var _popupHeight = this.options.height;
         var _winScrollTop = $(window).scrollTop();
         var _winHeight = $(window).height();
         var _docHeight = $(document).height();
+        this.tip().css({
+            'width': _popupWidth,
+            'margin-left': -(_popupWidth / 2),
+            'top': (_winHeight - _popupHeight) / 2
+        });
+        if (_popupHeight > _winHeight) {
+            this.tip().css('top', 0);
+        }
+        if ($.browser.msie && ($.browser.version == "6.0") && !$.support.style) {
+            this.tip().css('top', (_winHeight - _popupHeight) / 2 + _winScrollTop);
+        }
+        return {
+            '_winScrollTop': _winScrollTop,
+            '_winHeight': _winHeight,
+            '_docHeight': _docHeight
+        };
+    };
 
+    Modal.prototype.pop = function (toolbar) {
+        var _this = this;
         var $tip = _this.tip();
+        var tempObj = _this.resize();
+
         var setContent = toolbar;
         $tip.find(".sppopwin-content").html(setContent).end().find(".sppopwin-title > h3").text(_this.options.title);
 
-        $tip.css({"width": _this.options.width, "margin-left": -(_popupWidth / 2), top: (_winHeight - _popupHeight) / 2});
         $("body").append($tip);
+        $tip.fadeIn(300);
         if (_this.options.maskLayer) {
-            if ($tip.nextAll('.popup_mask').length == 0) {
+            if ($('.popup_mask').length === 0) {
                 $tip.after("<div class='popup_mask'></div>");
-                $(".popup_mask").css("height", _docHeight);
+                $(".popup_mask").css("height", tempObj._docHeight);
                 if ($.browser.msie && $.browser.version <= 6) {
                     $(".popup_mask").after("<iframe class='popup_iframe' frameborder='0'></iframe>");
-                    $(".popup_iframe").css("height", _docHeight);
+                    $(".popup_iframe").css("height", tempObj._docHeight);
                 }
             }
         }
         _this.options.callback();
-
         $tip.find(".sppopwin-action-c").on("click", function () {
             var fn = _this.options.cancel;
             return typeof fn !== 'function' || fn.call(this) !== false ?
-                _this.close().remove() : this;
+                _this.close() : this;
         });
         $tip.find(".sppopwin-action-s").on("click", function () {
             var fn = _this.options.ok;
             return typeof fn !== 'function' || fn.call(this) !== false ?
-                _this.close().remove() : this;
+                _this.close() : this;
         });
-    }
+
+        $(window).bind('resize.popresize', function () {
+            _this.resize();
+        });
+    };
 
     $.fn.spmodal = function (option) {
         var options = typeof option == 'object' && option;
-        return this.each(function () {
-            var $this = $(this)
-            //new Modal(this, options);
-            if (typeof option == 'string') {
-                new Modal(this, [option]);
-            } else {
-                new Modal(this, options);
-            }
-        })
-    }
+        return new Modal(this, options);
+    };
 
-})(jQuery)
-
-/*edit log
- 2014/04/29
- 1.加入弹出后callback函数
-
- 2014/05/05
- 1.支持修改按钮文字(L30、L32)
-
- 2014/05/14
- 1.修复弹窗按钮绑定bug(L122、L128)
-
- 2014/06/11
- 1.合并pop
-
- 2014/06/12
- 1.可控制弹窗是否关闭
- 2.修复遮罩bug
- */
+})(jQuery);

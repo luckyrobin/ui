@@ -2,7 +2,7 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
-//        less文件处理
+        //        less文件处理
         less: {
             compile: {
                 options: {
@@ -12,20 +12,18 @@ module.exports = function (grunt) {
                     sourceMap: true,
                     sourceMapRootpath: "../"
                 },
-                files: [
-                    {
-                        // 不一一指定目标文件
-                        expand: true,
-                        // 源目录
-                        cwd: 'less/',
-                        // 源文件后缀
-                        src: '*.less',
-                        // 目标路径
-                        dest: 'css/',
-                        // 目标后缀
-                        ext: '.css'
-                    }
-                ]
+                files: [{
+                    // 不一一指定目标文件
+                    expand: true,
+                    // 源目录
+                    cwd: 'less/',
+                    // 源文件后缀
+                    src: '*.less',
+                    // 目标路径
+                    dest: 'css/',
+                    // 目标后缀
+                    ext: '.css'
+                }]
             }
         },
 
@@ -33,7 +31,7 @@ module.exports = function (grunt) {
         watch: {
             livereload: {
                 // 指定要监控的文件
-                files: ['less/*', 'js/*', '*.html'],
+                files: ['less/*', 'less/component/*', 'js/*', '*.html'],
                 // less变动，立即编译
                 tasks: ["less"],
                 options: {
@@ -50,20 +48,30 @@ module.exports = function (grunt) {
                 livereload: true
             },
             dev: {
-                options: {
-                }
+                options: {}
             }
         },
 
         // 复制文件
         copy: {
             main: {
-                files: [
-                    {expand: true, src: ['js/*.js'], dest: 'build/'},
-                    {expand: true, src: ['css/*.css'], dest: 'build/'},
-                    {expand: true, src: ['images/*.*'], dest: 'build/'},
-                    {expand: true, src: ['*.html'], dest: 'build/'}
-                ]
+                files: [{
+                    expand: true,
+                    src: ['js/*.js'],
+                    dest: 'build/'
+                }, {
+                    expand: true,
+                    src: ['css/*.css'],
+                    dest: 'build/'
+                }, {
+                    expand: true,
+                    src: ['images/*.*'],
+                    dest: 'build/'
+                }, {
+                    expand: true,
+                    src: ['*.html'],
+                    dest: 'build/'
+                }]
             }
         },
         //      css属性排序
@@ -85,25 +93,18 @@ module.exports = function (grunt) {
 
     });
 
-//    加载所需模块
-    grunt.loadNpmTasks('yhd-grunt-less');
+    //    加载所需模块
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-csscomb');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-//    自定义spriter模块
-    grunt.task.registerTask('spriter', function () {
-        var done = this.async();
-        var spriter = require('ispriter');
-        var configFile = 'config.json';
-        spriter.merge(configFile);
-    });
 
-//    开发时task
+    //    开发时task
     grunt.task.registerTask('default', ['less', 'connect', 'watch']);
 
-//    构建task
+    //    构建task
     grunt.task.registerTask('build', ['csscomb', 'clean', 'copy']);
 };
