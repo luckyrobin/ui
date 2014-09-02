@@ -1,6 +1,6 @@
 var DateCore = function () {
     this.init();
-    console.log(this.Datepanel(this.currentDate.year,this.currentDate.month,this.currentDate.date));
+    //console.log(this.Datepanel(this.currentDate.year,this.currentDate.month,this.currentDate.date));
 };
 
 DateCore.prototype.init = function () {

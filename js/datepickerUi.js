@@ -55,7 +55,7 @@
     Calendar.prototype.calendarShow = function() {
         var me = this;
         var inputDom = me.$element;
-        var boxHtml = '<div id="calenderBox"></div>',
+        var boxHtml = evalJquery('<div id="calenderBox"><p class="pp"></p></div>'),
             startInput = inputDom.eq(0),
             endInput = 0,
             boxTop = startInput.offset().top + startInput.height(),
@@ -64,9 +64,14 @@
             endInput = inputDom.eq(1);
         };
         var DateCore = new me.DateCore();
-        $(boxHtml).html();
-
+        var temp = DateCore.Datepanel(DateCore.currentDate.year,DateCore.currentDate.month,DateCore.currentDate.date);
+        boxHtml.find('.pp').text(temp.toString());
+        $(inputDom).after(boxHtml);
     };
+
+    function evalJquery(str){
+    	  return this.$tip = this.$tip || $(str);
+    }
 
     $.fn.spcalendar = function(option) {
         var options = typeof option == 'object' && option;
