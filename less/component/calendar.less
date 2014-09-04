@@ -1,0 +1,46 @@
+.calenderBox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #F6F6F6;
+    .table-condensed {
+       max-width: 100%;
+       background-color: transparent;
+       border-spacing: 0;
+        text-align: center;
+        thead {
+            background-color: #FAFAFA;
+            tr{
+
+            }
+            th {
+                padding: 6px;
+                &.prev {
+                    background-color: pink;
+                    cursor: pointer;
+                }
+                &.next {
+                    background-color: green;
+                    cursor: pointer;
+                }
+                &.dow{
+                	font-weight: normal;
+            	    border-top: 1px solid #EFEFEF;
+            		border-bottom: 1px solid #EFEFEF;
+                }
+            }
+        }
+        tbody {
+            td {
+               	padding: 6px;
+                border: 1px solid transparent;
+                cursor: pointer;
+                &:hover {
+                    color: #64C2E9;
+                    border-color: #64C2E9;
+                }
+            }
+        }
+    }
+}

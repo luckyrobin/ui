@@ -1,4 +1,5 @@
-var DateCore = function () {
+var DateCore = function (config) {
+    this.config = config;
     this.init();
     //console.log(this.Datepanel(this.currentDate.year,this.currentDate.month,this.currentDate.date));
 };
