@@ -18,19 +18,23 @@ DateCore.prototype.init = function () {
 };
 
 DateCore.prototype.Datepanel = function (year, month, date, num) {
+    
     var me = this;
     var myDate = new Date(year, month-1);
     var firstDay = myDate.getDay();
     var monthDayNum = monthDays(year,month-1);
     var dateArray = new Array(42);
+    var loop = false;
     for (var i = firstDay,startDate = 1; i < dateArray.length; i++) {
         if(startDate > monthDayNum){
             startDate = 1;
+            loop = true;
         }
-        dateArray[i] = startDate++;
+        loop?dateArray[i] = {'date':startDate++,'modal':'new'}:dateArray[i] = {'date':startDate++,'modal':''};
     };
-   for (var i = firstDay-1,startDate = monthDays(year,month-2); i >= 0; i--) {
-       dateArray[i] = startDate--;
+    
+   for (var i = firstDay-1,startDate = monthDays(year,(month-2)<0?11:(month-2)); i >= 0; i--) {
+       dateArray[i] = {'date':startDate--,'modal':'old'};
    };
     return dateArray;
 };

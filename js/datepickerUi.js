@@ -23,7 +23,7 @@
 
         //加载css
         var css = me.options.css;
-        if (css&&!($.data(document.body).isLoadStyle)) {
+        if (css && !($.data(document.body).isLoadStyle)) {
             css = '<link rel="stylesheet" href="' + css + '" />';
             if ($('base')[0]) {
                 $('base').before(css);
@@ -70,34 +70,31 @@
             boxTop = startInput.offset().top + startInput.outerHeight(),
             boxLeft = startInput.offset().left,
             dateboxFrame = evalJquery('<div class="' + me.options.rootNode + '"></div>');
-            //boxHtml = evalDom('<div class="' + me.options.rootNode + '" style="top:'+boxTop+'px;left:'+boxLeft+'px">');
+        //boxHtml = evalDom('<div class="' + me.options.rootNode + '" style="top:'+boxTop+'px;left:'+boxLeft+'px">');
         if (inputDom.length > 1) {
             endInput = inputDom.eq(1);
         };
-        dateboxFrame.css({top:boxTop,left:boxLeft});
+        dateboxFrame.css({
+            top: boxTop,
+            left: boxLeft
+        });
         $(inputDom).last().after(dateboxFrame);
         var DateCore = new me.DateCore(me.options);
         var curYear = DateCore.currentDate.year,
             curMonth = DateCore.currentDate.month,
             curDate = DateCore.currentDate.date;
-        loadDate.call(me,dateboxFrame,DateCore,curYear,curMonth,curDate);
+        loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
 
 
         //绑定document关闭事件
         $(document).on('click.clearDom', function(event) {
             var elem = $(event.target);
             if (elem.closest('.' + me.options.rootNode + '').length == 0 && elem.closest(me.$element).length == 0) {
-               alert();
-               me.calendarClose();
+                me.calendarClose();
             }
         });
 
-        //绑定翻页按钮事件
-        var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
-        dateBoxDOM.find(".table-condensed .next").on("click",function(event){
-            event.stopPropagation();
-            loadDate.call(me,dateboxFrame,DateCore,curYear,++curMonth,curDate);
-        })
+
 
     };
 
@@ -112,17 +109,15 @@
         return calendarTemp.empty().remove();
     };
 
-    function loadDate(dateboxFrame,DateCore,year,month,date){
-        //console.log(dateboxFrame,year,month,date);
-        //dateboxFrame.contents().remove();
+    function loadDate(dateboxFrame, DateCore, year, month, date) {
         var me = this;
         var data_Date = DateCore.Datepanel(year, month, date);
-        var dayOrder = getDayOrder.call(me,me.options.startDay);
+        var dayOrder = getDayOrder.call(me, me.options.startDay);
 
         var dateboxTable = evalDom('<table class="table-condensed">');
 
         //生成日期模板
-        dateboxTable.push('<thead><tr><th class="prev"></th><th colspan="5" class="switch"><span>' + DateCore.currentDate.year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span>' + me.$Lang.months[DateCore.currentDate.month-1] + '</span></th><th class="next"></th></tr>');
+        dateboxTable.push('<thead><tr><th class="prev"></th><th colspan="5" class="switch"><span>' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span>' + me.$Lang.months[month - 1] + '</span></th><th class="next"></th></tr>');
         dateboxTable.push('<tr>');
         for (var i = 0; i < dayOrder.length; i++) {
             dateboxTable.push('<th class="dow">' + dayOrder[i] + '</th>');
@@ -130,10 +125,10 @@
         dateboxTable.push('</tr>');
         dateboxTable.push('</thead>');
         dateboxTable.push('<tbody>');
-        for (var m = 0,k = 0; m < data_Date.length/7; m++) {
+        for (var m = 0, k = 0; m < data_Date.length / 7; m++) {
             dateboxTable.push('<tr>');
             for (var n = 0; n < 7; n++) {
-                dateboxTable.push('<td class="day">' + data_Date[k] + '</td>');
+                dateboxTable.push('<td class="day '+data_Date[k].modal+'">' + data_Date[k].date + '</td>');
                 k++;
             };
             dateboxTable.push('</tr>');
@@ -141,12 +136,31 @@
         dateboxTable.push('</tbody>');
         dateboxTable.push('</table>');
 
-        //dateboxFrame.append(dateboxTable.join(''));
-        if(dateboxFrame.contents().length !== 0){
-            console.log(dateboxFrame.contents());
-            dateboxFrame.contents().empty();
-          }
-         dateboxFrame.append(dateboxTable.join(''));
+        if (dateboxFrame.contents().length !== 0) {
+            dateboxFrame.contents().remove();
+        }
+        dateboxFrame.append(dateboxTable.join(''));
+        //绑定翻页按钮事件
+        var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
+        dateBoxDOM.find(".table-condensed .next").one("click", function(event) {
+            event.stopPropagation();
+            month++;
+            if (month > 12) {
+                month = 1;
+                year++;
+            }
+            loadDate.call(me, dateboxFrame, DateCore, year, month, date);
+        });
+
+        dateBoxDOM.find(".table-condensed .prev").one("click", function(event) {
+            event.stopPropagation();
+            month--;
+            if (month <= 0) {
+                month = 12;
+                year--;
+            }
+            loadDate.call(me, dateboxFrame, DateCore, year, month, date);
+        });
     }
 
     /**
@@ -184,8 +198,8 @@
      */
     function getDayOrder(startDay) {
         var dayOrder = [];
-        for (var i = 0, j = startDay-1; i < this.$Lang.daysShort.length; i++) {
-            if (j === this.$Lang.daysShort.length-1) {
+        for (var i = 0, j = startDay - 1; i < this.$Lang.daysShort.length; i++) {
+            if (j === this.$Lang.daysShort.length - 1) {
                 dayOrder.push(this.$Lang.daysShort[j]);
                 j = 0;
                 continue;
