@@ -94,7 +94,12 @@
             }
         });
 
-
+        //动态绑定日期单元格事件
+        dateboxFrame.delegate("td.day", "click", function() {
+            var str = getCellDate(dateboxFrame,$(this));
+            if(!str)return false;
+            inputDom.val(str);
+        });
 
     };
 
@@ -109,6 +114,15 @@
         return calendarTemp.empty().remove();
     };
 
+    /**
+     * [loadDate description]
+     * @param  {object} dateboxFrame 外层div的jquery对象
+     * @param  {object} DateCore     实例化的core
+     * @param  {number} year         年
+     * @param  {number} month        月
+     * @param  {number} date         日
+     * @return {[type]}              reload日期视图
+     */
     function loadDate(dateboxFrame, DateCore, year, month, date) {
         var me = this;
         var data_Date = DateCore.Datepanel(year, month, date);
@@ -117,7 +131,7 @@
         var dateboxTable = evalDom('<table class="table-condensed">');
 
         //生成日期模板
-        dateboxTable.push('<thead><tr><th class="prev"></th><th colspan="5" class="switch"><span>' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span>' + me.$Lang.months[month - 1] + '</span></th><th class="next"></th></tr>');
+        dateboxTable.push('<thead><tr><th class="prev"></th><th colspan="5" class="switch"><span>' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span>' + me.$Lang.monthsShort[month - 1] + '月</span></th><th class="next"></th></tr>');
         dateboxTable.push('<tr>');
         for (var i = 0; i < dayOrder.length; i++) {
             dateboxTable.push('<th class="dow">' + dayOrder[i] + '</th>');
@@ -128,7 +142,7 @@
         for (var m = 0, k = 0; m < data_Date.length / 7; m++) {
             dateboxTable.push('<tr>');
             for (var n = 0; n < 7; n++) {
-                dateboxTable.push('<td class="day '+data_Date[k].modal+'">' + data_Date[k].date + '</td>');
+                dateboxTable.push('<td class="day ' + data_Date[k].modal + '">' + data_Date[k].date + '</td>');
                 k++;
             };
             dateboxTable.push('</tr>');
@@ -140,6 +154,7 @@
             dateboxFrame.contents().remove();
         }
         dateboxFrame.append(dateboxTable.join(''));
+
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
         dateBoxDOM.find(".table-condensed .next").one("click", function(event) {
@@ -161,8 +176,46 @@
             }
             loadDate.call(me, dateboxFrame, DateCore, year, month, date);
         });
+
     }
 
+    /**
+     * [getCellDate description]
+     * @return {[type]} [description]
+     */
+    function getCellDate(dateboxFrame,cellObj){
+        var tempArray = [],
+            year = parseInt(dateboxFrame.find('.switch span:eq(0)').text()),
+            month = parseInt(dateboxFrame.find('.switch span:eq(1)').text());
+        var date = parseInt(cellObj.text());
+        if(cellObj.hasClass('old')||cellObj.hasClass('new'))return false;
+        tempArray.push(year);
+        tempArray.push(autoCompletion(month));
+        tempArray.push(autoCompletion(date));
+        return tempArray.join('-');
+    }
+
+    /**
+     * [getDayOrder description]
+     * @param  {number} startDay 起始星期
+     * @return {Array}          返回日期顺序序列
+     */
+    function getDayOrder(startDay) {
+        var dayOrder = [];
+        for (var i = 0, j = startDay - 1; i < this.$Lang.daysShort.length; i++) {
+            if (j === this.$Lang.daysShort.length - 1) {
+                dayOrder.push(this.$Lang.daysShort[j]);
+                j = 0;
+                continue;
+            };
+            dayOrder.push(this.$Lang.daysShort[j]);
+            j++;
+        };
+        return dayOrder;
+    }
+
+    //TOOL
+    
     /**
      * [isExist 判断日历DOM是否存在]
      * @return {Number} 返回DOM长度
@@ -192,22 +245,15 @@
     }
 
     /**
-     * [getDayOrder description]
-     * @param  {number} startDay 起始星期
-     * @return {Array}          返回日期顺序序列
+     * [evalJquery description]
+     * @param  {[type]} str DOM字符串
+     * @return {[type]}     返回jquery包装后的对象
      */
-    function getDayOrder(startDay) {
-        var dayOrder = [];
-        for (var i = 0, j = startDay - 1; i < this.$Lang.daysShort.length; i++) {
-            if (j === this.$Lang.daysShort.length - 1) {
-                dayOrder.push(this.$Lang.daysShort[j]);
-                j = 0;
-                continue;
-            };
-            dayOrder.push(this.$Lang.daysShort[j]);
-            j++;
-        };
-        return dayOrder;
+    function autoCompletion(num) {
+        if(num>0&&num<10){
+            num = '0' + num;
+        }
+        return num;
     }
 
     $.fn.spcalendar = function(option) {

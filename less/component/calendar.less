@@ -3,14 +3,14 @@
     top: 0;
     left: 0;
     background-color: #fff;
-    border: 1px solid #F6F6F6;
+    border: 1px solid #efefef;
     .table-condensed {
        max-width: 100%;
        background-color: transparent;
        border-spacing: 0;
         text-align: center;
         thead {
-            background-color: #FAFAFA;
+            background-color: #fafafa;
             tr{
 
             }
@@ -37,11 +37,15 @@
                 border: 1px solid transparent;
                 cursor: pointer;
                 &:hover {
-                    color: #64C2E9;
-                    border-color: #64C2E9;
+                    color: #47b7e6;
+                    border-color: #47b7e6;
                 }
                 &.new,&.old{
-                    color: #999;
+                    color: #c7c7c7;
+                    cursor: not-allowed;
+                }
+                &.active{
+                    color: #47b7e6;
                 }
             }
         }
