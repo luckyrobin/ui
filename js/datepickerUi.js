@@ -12,7 +12,7 @@
     Calendar.DEFAULTS = {
         css: 'css/ui.css',
         rootNode: 'calenderBox',
-        startDay: 7,
+        startDay: 7
     };
 
     Calendar.prototype.init = function(type, options) {
