@@ -12,13 +12,14 @@
     Calendar.DEFAULTS = {
         css: 'css/ui.css',
         rootNode: 'calenderBox',
-        startDay: 7
+        startDay: 7,
+        radio:false //
     };
 
     Calendar.prototype.init = function(type, options) {
         var me = this;
         me.type = type;
-        me.options = me.getOptions(options),
+        me.options = me.getOptions(options);
         me.DateCore = DateCore;
 
         //加载css
@@ -72,10 +73,10 @@
             boxLeft = startInput.offset().left,
             dateboxFrame = evalJquery('<div class="' + me.options.rootNode + '"></div>');
         //boxHtml = evalDom('<div class="' + me.options.rootNode + '" style="top:'+boxTop+'px;left:'+boxLeft+'px">');
-        if (inputDom.length > 1) {
+        if (!me.options.radio) {
             var timeBlock = [];
             endInput = inputDom.eq(1);
-        };
+        }
         dateboxFrame.css({
             top: boxTop,
             left: boxLeft
@@ -101,7 +102,8 @@
             var str = getCellDate(dateboxFrame, $(this));
             if (!str) return false;
             //是否选择时间段
-            if (!endInput) {
+            if (me.options.radio) {
+                //单选
                 if (currentStyle.length) {
                     currentStyle[0].removeClass('pressed');
                     currentStyle.length = 0;
@@ -110,22 +112,27 @@
                 currentStyle[0].addClass('pressed');
                 startInput.val(str);
             } else {
+                //选择区间
                 currentStyle.push($(this));
                 for (var i = 0; i < currentStyle.length; i++) {
                     currentStyle[i].addClass('pressed');
-                };
+                }
                 if (currentStyle.length > 2) {
-                    for (var i = 0; i < currentStyle.length; i++) {
-                        currentStyle[i].removeClass('pressed');
-                    };
+                    for (var j = 0; j < currentStyle.length; j++) {
+                        currentStyle[j].removeClass('pressed');
+                    }
                     currentStyle.length = 0;
+                    return false;
                 }
                 //line
                 timeBlock.push(str);
                 if (timeBlock.length >= 2) {
                     var mDate = getDateCompared(timeBlock);
+                    startInput.val(mDate.min);
+                    endInput.val(mDate.max);
+                    completionArea(mDate.min,mDate.max);
                     timeBlock.length = 0;
-                };
+                }
             }
         });
 
@@ -137,7 +144,7 @@
      */
     Calendar.prototype.calendarClose = function() {
         var me = this;
-        var calendarTemp = $('.' + this.options.rootNode + '');
+        var calendarTemp = $('.' + me.options.rootNode + '');
         $(document).off('click.clearDom');
         return calendarTemp.empty().remove();
     };
@@ -163,7 +170,7 @@
         dateboxTable.push('<tr>');
         for (var i = 0; i < dayOrder.length; i++) {
             dateboxTable.push('<th class="dow">' + dayOrder[i] + '</th>');
-        };
+        }
         dateboxTable.push('</tr>');
         dateboxTable.push('</thead>');
         dateboxTable.push('<tbody>');
@@ -172,9 +179,9 @@
             for (var n = 0; n < 7; n++) {
                 dateboxTable.push('<td class="day ' + data_Date[k].modal + '">' + data_Date[k].date + '</td>');
                 k++;
-            };
+            }
             dateboxTable.push('</tr>');
-        };
+        }
         dateboxTable.push('</tbody>');
         dateboxTable.push('</table>');
 
@@ -235,10 +242,10 @@
                 dayOrder.push(this.$Lang.daysShort[j]);
                 j = 0;
                 continue;
-            };
+            }
             dayOrder.push(this.$Lang.daysShort[j]);
             j++;
-        };
+        }
         return dayOrder;
     }
 
@@ -273,9 +280,9 @@
     }
 
     /**
-     * [evalJquery description]
-     * @param  {[type]} str DOM字符串
-     * @return {[type]}     返回jquery包装后的对象
+     * [autoCompletion description]
+     * @param  {Number} num 需要自动补全的数
+     * @return {String}     返回补全后的数
      */
     function autoCompletion(num) {
         if (num > 0 && num < 10) {
@@ -298,6 +305,10 @@
         obj.min = sorted[0];
         obj.max = sorted[sorted.length - 1];
         return obj;
+    }
+
+    function completionArea(min,max){
+        console.log(min,max);
     }
 
     $.fn.spcalendar = function(option) {

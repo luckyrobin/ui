@@ -34,9 +34,9 @@ DateCore.prototype.Datepanel = function(year, month, date, num) {
             dateArray[i] = {
                 'date': startDate++,
                 'modal': 'active'
-            }
+            };
             continue;
-        };
+        }
         loop ? dateArray[i] = {
             'date': startDate++,
             'modal': 'new'
@@ -44,14 +44,14 @@ DateCore.prototype.Datepanel = function(year, month, date, num) {
             'date': startDate++,
             'modal': ''
         };
-    };
+    }
 
     for (var i = firstDay - 1, startDate = monthDays(year, (month - 2) < 0 ? 11 : (month - 2)); i >= 0; i--) {
         dateArray[i] = {
             'date': startDate--,
             'modal': 'old'
         };
-    };
+    }
     return dateArray;
 };
 
