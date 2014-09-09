@@ -67,11 +67,13 @@
         var inputDom = me.$element;
         var startInput = inputDom.eq(0),
             endInput = 0,
+            currentStyle = [],
             boxTop = startInput.offset().top + startInput.outerHeight(),
             boxLeft = startInput.offset().left,
             dateboxFrame = evalJquery('<div class="' + me.options.rootNode + '"></div>');
         //boxHtml = evalDom('<div class="' + me.options.rootNode + '" style="top:'+boxTop+'px;left:'+boxLeft+'px">');
         if (inputDom.length > 1) {
+            var timeBlock = [];
             endInput = inputDom.eq(1);
         };
         dateboxFrame.css({
@@ -96,9 +98,35 @@
 
         //动态绑定日期单元格事件
         dateboxFrame.delegate("td.day", "click", function() {
-            var str = getCellDate(dateboxFrame,$(this));
-            if(!str)return false;
-            inputDom.val(str);
+            var str = getCellDate(dateboxFrame, $(this));
+            if (!str) return false;
+            //是否选择时间段
+            if (!endInput) {
+                if (currentStyle.length) {
+                    currentStyle[0].removeClass('pressed');
+                    currentStyle.length = 0;
+                }
+                currentStyle.push($(this));
+                currentStyle[0].addClass('pressed');
+                startInput.val(str);
+            } else {
+                currentStyle.push($(this));
+                for (var i = 0; i < currentStyle.length; i++) {
+                    currentStyle[i].addClass('pressed');
+                };
+                if (currentStyle.length > 2) {
+                    for (var i = 0; i < currentStyle.length; i++) {
+                        currentStyle[i].removeClass('pressed');
+                    };
+                    currentStyle.length = 0;
+                }
+                //line
+                timeBlock.push(str);
+                if (timeBlock.length >= 2) {
+                    var mDate = getDateCompared(timeBlock);
+                    timeBlock.length = 0;
+                };
+            }
         });
 
     };
@@ -180,15 +208,15 @@
     }
 
     /**
-     * [getCellDate description]
+     * [getCellDate 获取单元格日期]
      * @return {[type]} [description]
      */
-    function getCellDate(dateboxFrame,cellObj){
+    function getCellDate(dateboxFrame, cellObj) {
         var tempArray = [],
             year = parseInt(dateboxFrame.find('.switch span:eq(0)').text()),
             month = parseInt(dateboxFrame.find('.switch span:eq(1)').text());
         var date = parseInt(cellObj.text());
-        if(cellObj.hasClass('old')||cellObj.hasClass('new'))return false;
+        if (cellObj.hasClass('old') || cellObj.hasClass('new')) return false;
         tempArray.push(year);
         tempArray.push(autoCompletion(month));
         tempArray.push(autoCompletion(date));
@@ -215,7 +243,7 @@
     }
 
     //TOOL
-    
+
     /**
      * [isExist 判断日历DOM是否存在]
      * @return {Number} 返回DOM长度
@@ -250,10 +278,26 @@
      * @return {[type]}     返回jquery包装后的对象
      */
     function autoCompletion(num) {
-        if(num>0&&num<10){
+        if (num > 0 && num < 10) {
             num = '0' + num;
         }
         return num;
+    }
+
+    /**
+     * [getDateCompared description]
+     * @param  {Array} arr 需要排序的数组
+     * @return {Object}     包含最大和最小日期的对象
+     */
+    function getDateCompared(arr) {
+        if (!(arr instanceof Array)) return false;
+        var obj = {};
+        var sorted = arr.sort(function(date1, date2) {
+            return date1.split('-').join('') - date2.split('-').join('')
+        });
+        obj.min = sorted[0];
+        obj.max = sorted[sorted.length - 1];
+        return obj;
     }
 
     $.fn.spcalendar = function(option) {
