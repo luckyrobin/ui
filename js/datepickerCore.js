@@ -86,7 +86,7 @@ DateCore.prototype.getYears = function(startYear, num) {
 };
 
 /**
- * 闰二月天数
+ * 获取当前月天数
  * @param yearNum 年
  * @param month 月
  * @return {*}

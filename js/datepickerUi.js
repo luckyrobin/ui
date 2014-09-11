@@ -4,6 +4,9 @@
     var Calendar = function(element, options) {
         this.$element = $(element);
         this.$Lang = dateLanguage.cn;
+        this.CACHE = {
+            currentStyle: []
+        };
 
         this.init('type', options);
     };
@@ -13,7 +16,7 @@
         css: 'css/ui.css',
         rootNode: 'calenderBox',
         startDay: 7,
-        radio:false //
+        radio: false //
     };
 
     Calendar.prototype.init = function(type, options) {
@@ -22,7 +25,7 @@
         me.options = me.getOptions(options);
         me.DateCore = DateCore;
 
-        //加载css
+        //动态加载css
         var css = me.options.css;
         if (css && !($.data(document.body).isLoadStyle)) {
             css = '<link rel="stylesheet" href="' + css + '" />';
@@ -68,7 +71,6 @@
         var inputDom = me.$element;
         var startInput = inputDom.eq(0),
             endInput = 0,
-            currentStyle = [],
             boxTop = startInput.offset().top + startInput.outerHeight(),
             boxLeft = startInput.offset().left,
             dateboxFrame = evalJquery('<div class="' + me.options.rootNode + '"></div>');
@@ -77,6 +79,7 @@
             var timeBlock = [];
             endInput = inputDom.eq(1);
         }
+        completionAreaStyle.call(me,startInput.val(),endInput.val());
         dateboxFrame.css({
             top: boxTop,
             left: boxLeft
@@ -99,38 +102,38 @@
 
         //动态绑定日期单元格事件
         dateboxFrame.delegate("td.day", "click", function() {
-            var str = getCellDate(dateboxFrame, $(this));
+            var str = getCellDate($(this));
             if (!str) return false;
             //是否选择时间段
             if (me.options.radio) {
                 //单选
-                if (currentStyle.length) {
-                    currentStyle[0].removeClass('pressed');
-                    currentStyle.length = 0;
+                if (me.CACHE.currentStyle.length) {
+                    me.CACHE.currentStyle[0].removeClass('pressed');
+                    me.CACHE.currentStyle.length = 0;
                 }
-                currentStyle.push($(this));
-                currentStyle[0].addClass('pressed');
+                me.CACHE.currentStyle.push($(this));
+                me.CACHE.currentStyle[0].addClass('pressed');
                 startInput.val(str);
             } else {
                 //选择区间
-                currentStyle.push($(this));
-                for (var i = 0; i < currentStyle.length; i++) {
-                    currentStyle[i].addClass('pressed');
+                //
+                if (me.CACHE.currentStyle.length >= 2) {
+                    clearAreaStyle.call(me);
+                    
+                    me.CACHE.currentStyle.length = 0;
                 }
-                if (currentStyle.length > 2) {
-                    for (var j = 0; j < currentStyle.length; j++) {
-                        currentStyle[j].removeClass('pressed');
-                    }
-                    currentStyle.length = 0;
-                    return false;
+                me.CACHE.currentStyle.push($(this));
+                for (var i = 0; i < me.CACHE.currentStyle.length; i++) {
+                    me.CACHE.currentStyle[i].addClass('pressed');
                 }
+
                 //line
                 timeBlock.push(str);
                 if (timeBlock.length >= 2) {
                     var mDate = getDateCompared(timeBlock);
                     startInput.val(mDate.min);
                     endInput.val(mDate.max);
-                    completionArea(mDate.min,mDate.max);
+                    completionAreaStyle.call(me,mDate.min, mDate.max);
                     timeBlock.length = 0;
                 }
             }
@@ -177,7 +180,12 @@
         for (var m = 0, k = 0; m < data_Date.length / 7; m++) {
             dateboxTable.push('<tr>');
             for (var n = 0; n < 7; n++) {
-                dateboxTable.push('<td class="day ' + data_Date[k].modal + '">' + data_Date[k].date + '</td>');
+                var reg = /old|new/g;
+                var tempString = year + '-' + autoCompletion(month) + '-' + autoCompletion(data_Date[k].date);
+                if (reg.test(data_Date[k].modal)) {
+                    tempString = '';
+                }
+                dateboxTable.push('<td class="day ' + data_Date[k].modal + '" title="' + tempString + '">' + data_Date[k].date + '</td>');
                 k++;
             }
             dateboxTable.push('</tr>');
@@ -218,7 +226,12 @@
      * [getCellDate 获取单元格日期]
      * @return {[type]} [description]
      */
-    function getCellDate(dateboxFrame, cellObj) {
+    function getCellDate(cellObj) {
+        if (cellObj.hasClass('old') || cellObj.hasClass('new')) return false;
+        return cellObj.prop('title');
+    }
+
+    /*function getCellDate(dateboxFrame, cellObj) {
         var tempArray = [],
             year = parseInt(dateboxFrame.find('.switch span:eq(0)').text()),
             month = parseInt(dateboxFrame.find('.switch span:eq(1)').text());
@@ -228,7 +241,7 @@
         tempArray.push(autoCompletion(month));
         tempArray.push(autoCompletion(date));
         return tempArray.join('-');
-    }
+    }*/
 
     /**
      * [getDayOrder description]
@@ -285,10 +298,7 @@
      * @return {String}     返回补全后的数
      */
     function autoCompletion(num) {
-        if (num > 0 && num < 10) {
-            num = '0' + num;
-        }
-        return num;
+        return num < 10 ? "0" + num : num;
     }
 
     /**
@@ -307,8 +317,39 @@
         return obj;
     }
 
-    function completionArea(min,max){
-        console.log(min,max);
+    /**
+     * [completionArea description]
+     * @param  {String} min 最小日期
+     * @param  {String} max 最大日期
+     * @return {[type]}     补全区间内样式
+     */
+    function completionAreaStyle(min, max) {
+        var me = this,
+            min = parseInt(min.split('-').join('')),
+            max = parseInt(max.split('-').join(''));
+        $('.table-condensed td.day').each(function(i, n) {
+            var t = parseInt($(this).prop('title').split('-').join(''));
+            if (isNaN(t)) return;
+            if (t > min && t < max) {
+                me.CACHE.currentStyle.push($(this));
+                $(this).addClass('pressed');
+            }
+        });
+        alert();
+    }
+
+    function clearAreaStyle() {
+        var tempArray = this.CACHE.currentStyle;
+        for (var i = 0; i < tempArray.length; i++) {
+            if (tempArray[i].hasClass('pressed')) {
+                tempArray[i].removeClass('pressed');
+            }
+        };
+       /* $('.table-condensed td.day').each(function(i, n) {
+            if ($(this).hasClass('pressed')) {
+                $(this).removeClass('pressed');
+            }
+        });*/
     }
 
     $.fn.spcalendar = function(option) {
