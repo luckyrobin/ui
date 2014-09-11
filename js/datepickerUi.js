@@ -311,7 +311,7 @@
      * @return {String}     返回补全后的数
      */
     function autoCompletion(num) {
-        return num < 10 ? "0" + num : num;
+        return !/^\d{2}$/.test(num) && num < 10 ? "0" + num : num;
     }
 
     /**
@@ -343,6 +343,7 @@
         $('.table-condensed td.day').each(function(i, n) {
             var t = parseInt($(this).prop('title').split('-').join(''));
             if (isNaN(t)) return;
+            // console.log(t >= min,t,min);
             if (t >= min && t <= max) {
                 me.CACHE.currentStyle.push($(this));
                 $(this).addClass('pressed');
