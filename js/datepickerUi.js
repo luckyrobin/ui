@@ -16,7 +16,8 @@
         css: 'css/ui.css',
         rootNode: 'calenderBox',
         startDay: 7,
-        radio: false //
+        radio: false,
+        daypanel: 3
     };
 
     Calendar.prototype.init = function(type, options) {
@@ -79,18 +80,25 @@
             var timeBlock = [];
             endInput = inputDom.eq(1);
         }
-        completionAreaStyle.call(me,startInput.val(),endInput.val());
         dateboxFrame.css({
             top: boxTop,
             left: boxLeft
         });
         $(inputDom).last().after(dateboxFrame);
+
+        //load date box
         var DateCore = new me.DateCore(me.options);
         var curYear = DateCore.currentDate.year,
             curMonth = DateCore.currentDate.month,
             curDate = DateCore.currentDate.date;
-        loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
 
+        if (startInput.val() !== '') {
+            var aDateSplit = startInput.val().split('-');
+            curYear = aDateSplit[0];
+            curMonth = aDateSplit[1];
+            curDate = aDateSplit[2];
+        }
+        loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
 
         //绑定document关闭事件
         $(document).on('click.clearDom', function(event) {
@@ -108,7 +116,7 @@
             if (me.options.radio) {
                 //单选
                 if (me.CACHE.currentStyle.length) {
-                    me.CACHE.currentStyle[0].removeClass('pressed');
+                    clearAreaStyle.call(me);
                     me.CACHE.currentStyle.length = 0;
                 }
                 me.CACHE.currentStyle.push($(this));
@@ -119,7 +127,7 @@
                 //
                 if (me.CACHE.currentStyle.length >= 2) {
                     clearAreaStyle.call(me);
-                    
+
                     me.CACHE.currentStyle.length = 0;
                 }
                 me.CACHE.currentStyle.push($(this));
@@ -133,7 +141,7 @@
                     var mDate = getDateCompared(timeBlock);
                     startInput.val(mDate.min);
                     endInput.val(mDate.max);
-                    completionAreaStyle.call(me,mDate.min, mDate.max);
+                    completionAreaStyle.call(me, mDate.min, mDate.max);
                     timeBlock.length = 0;
                 }
             }
@@ -197,6 +205,11 @@
             dateboxFrame.contents().remove();
         }
         dateboxFrame.append(dateboxTable.join(''));
+
+        //repaint pressed td
+        if (me.$element.eq(0).val() !== '') {
+            completionAreaStyle.call(me, me.$element.eq(0).val(), me.options.radio ? me.$element.eq(0).val() : me.$element.eq(1).val());
+        }
 
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
@@ -330,12 +343,11 @@
         $('.table-condensed td.day').each(function(i, n) {
             var t = parseInt($(this).prop('title').split('-').join(''));
             if (isNaN(t)) return;
-            if (t > min && t < max) {
+            if (t >= min && t <= max) {
                 me.CACHE.currentStyle.push($(this));
                 $(this).addClass('pressed');
             }
         });
-        alert();
     }
 
     function clearAreaStyle() {
@@ -345,7 +357,7 @@
                 tempArray[i].removeClass('pressed');
             }
         };
-       /* $('.table-condensed td.day').each(function(i, n) {
+        /* $('.table-condensed td.day').each(function(i, n) {
             if ($(this).hasClass('pressed')) {
                 $(this).removeClass('pressed');
             }
