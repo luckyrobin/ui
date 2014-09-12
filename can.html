@@ -11,10 +11,9 @@
     }
     .container {
         width: 600px;
-        height: 200px;
         margin: 0 auto;
         margin-top: 100px;
-        padding: 20px;
+        padding: 20px 20px 40px;
         background: rgba(0, 0, 0, 0.5);
         border: 1px solid #000;
     }
@@ -32,6 +31,12 @@
     span.space {
         color: #fff;
     }
+    .container h4{
+        padding: 5px 0;
+        color: #fff;
+        font-size: 14px;
+        font-family: 'Microsoft YaHei';
+    }
     </style>
 </head>
 
@@ -39,12 +44,20 @@
     <!--头部S-->
     <div class="container">
         <div>
+            <h4>单日期选择</h4>
             <input type="text" class="ipt2_left date7" value="" />
         </div>
         <div style="margin-top: 50px;">
+            <h4>日期区间选择</h4>
             <input type="text" class="ipt2_left date8" value="" />
             <span class="space">--</span>
             <input type="text" class="ipt2_left date8" value="" />
+        </div>
+        <div style="margin-top: 50px;">
+            <h4>日期区间选择--多日期面板</h4>
+            <input type="text" class="ipt2_left date9" value="" />
+            <span class="space">--</span>
+            <input type="text" class="ipt2_left date9" value="" />
         </div>
     </div>
     <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
@@ -57,6 +70,9 @@
             radio: true
         });
         $(".date8").spcalendar({});
+        $(".date9").spcalendar({
+            daypanel:3
+        });
     })
     </script>
 </body>

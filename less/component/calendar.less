@@ -4,10 +4,26 @@
     left: 0;
     background-color: #fff;
     border: 1px solid #efefef;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    .calenderInner{
+        &:after{
+            display: block;
+            content: ".";
+            height: 0;
+            visibility: hidden;
+            clear: both;
+            font-size: 0;
+            line-height: 0;
+        };
+    }
     .table-condensed {
+       float: left;
        max-width: 100%;
        background-color: transparent;
        border-spacing: 0;
+       padding-right: 10px;
         text-align: center;
         thead {
             background-color: #fafafa;
@@ -16,18 +32,18 @@
             }
             th {
                 padding: 6px;
-                &.prev {
-                    background-color: pink;
-                    cursor: pointer;
-                }
-                &.next {
-                    background-color: green;
-                    cursor: pointer;
-                }
                 &.dow{
                 	font-weight: normal;
             	    border-top: 1px solid #EFEFEF;
             		border-bottom: 1px solid #EFEFEF;
+                }
+                .switch{
+                    &-year,&-month{
+                        cursor: pointer;
+                        &:hover{
+                            color: #47b7e6;
+                        };
+                    }
                 }
             }
         }
@@ -53,5 +69,21 @@
                 }
             }
         }
+    }
+    a.prev,a.next {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        width: 26px;
+        height: 26px;
+        cursor: pointer;
+    }
+    a.prev{
+        left: 0;
+        background-color: pink;
+    }
+    a.next {
+        right: 0;
+        background-color: green;
     }
 }

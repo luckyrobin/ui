@@ -17,7 +17,7 @@
         rootNode: 'calenderBox',
         startDay: 7,
         radio: false,
-        daypanel: 3
+        daypanel: 1
     };
 
     Calendar.prototype.init = function(type, options) {
@@ -86,7 +86,7 @@
         });
         $(inputDom).last().after(dateboxFrame);
 
-        //load date box
+        //载入日期模板
         var DateCore = new me.DateCore(me.options);
         var curYear = DateCore.currentDate.year,
             curMonth = DateCore.currentDate.month,
@@ -124,7 +124,6 @@
                 startInput.val(str);
             } else {
                 //选择区间
-                //
                 if (me.CACHE.currentStyle.length >= 2) {
                     clearAreaStyle.call(me);
 
@@ -171,49 +170,42 @@
      */
     function loadDate(dateboxFrame, DateCore, year, month, date) {
         var me = this;
-        var data_Date = DateCore.Datepanel(year, month, date);
-        var dayOrder = getDayOrder.call(me, me.options.startDay);
 
-        var dateboxTable = evalDom('<table class="table-condensed">');
+        var calenderInner = evalDom('<div class="calenderInner">');
 
+        var mutipanel = {
+            year: year,
+            month: month,
+            date: date
+        };
         //生成日期模板
-        dateboxTable.push('<thead><tr><th class="prev"></th><th colspan="5" class="switch"><span>' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span>' + me.$Lang.monthsShort[month - 1] + '月</span></th><th class="next"></th></tr>');
-        dateboxTable.push('<tr>');
-        for (var i = 0; i < dayOrder.length; i++) {
-            dateboxTable.push('<th class="dow">' + dayOrder[i] + '</th>');
-        }
-        dateboxTable.push('</tr>');
-        dateboxTable.push('</thead>');
-        dateboxTable.push('<tbody>');
-        for (var m = 0, k = 0; m < data_Date.length / 7; m++) {
-            dateboxTable.push('<tr>');
-            for (var n = 0; n < 7; n++) {
-                var reg = /old|new/g;
-                var tempString = year + '-' + autoCompletion(month) + '-' + autoCompletion(data_Date[k].date);
-                if (reg.test(data_Date[k].modal)) {
-                    tempString = '';
-                }
-                dateboxTable.push('<td class="day ' + data_Date[k].modal + '" title="' + tempString + '">' + data_Date[k].date + '</td>');
-                k++;
+
+        for (var i = 0; i < me.options.daypanel; i++) {
+            if (mutipanel.month > 12) {
+                mutipanel.month = 1;
+                mutipanel.year++;
             }
-            dateboxTable.push('</tr>');
-        }
-        dateboxTable.push('</tbody>');
-        dateboxTable.push('</table>');
+            generateDateTemplate.call(me, calenderInner, DateCore, mutipanel.year, mutipanel.month++, mutipanel.date);
+        };
+
+        calenderInner.push('</div>');
+        calenderInner.push('<a class="prev"></a>');
+        calenderInner.push('<a class="next"></a>');
+
 
         if (dateboxFrame.contents().length !== 0) {
             dateboxFrame.contents().remove();
         }
-        dateboxFrame.append(dateboxTable.join(''));
+        dateboxFrame.append(calenderInner.join(''));
 
-        //repaint pressed td
+        //选择后重绘区间样式
         if (me.$element.eq(0).val() !== '') {
             completionAreaStyle.call(me, me.$element.eq(0).val(), me.options.radio ? me.$element.eq(0).val() : me.$element.eq(1).val());
         }
 
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
-        dateBoxDOM.find(".table-condensed .next").one("click", function(event) {
+        dateBoxDOM.find(".next").one("click", function(event) {
             event.stopPropagation();
             month++;
             if (month > 12) {
@@ -223,7 +215,7 @@
             loadDate.call(me, dateboxFrame, DateCore, year, month, date);
         });
 
-        dateBoxDOM.find(".table-condensed .prev").one("click", function(event) {
+        dateBoxDOM.find(".prev").one("click", function(event) {
             event.stopPropagation();
             month--;
             if (month <= 0) {
@@ -233,6 +225,54 @@
             loadDate.call(me, dateboxFrame, DateCore, year, month, date);
         });
 
+        //绑定切换视图事件
+        dateBoxDOM.find(".switch-year").one("click", function() {
+            alert(1);
+        });
+
+        dateBoxDOM.find(".switch-month").one("click", function() {
+            alert(2);
+        });
+    }
+
+    /**
+     * [generateDateTemplate 生成日视图模板]
+     * @param  {Array} templateArray 模板头数组
+     * @param  {object} DateCore      实例化的core
+     * @param  {number} year          年
+     * @param  {number} month         月
+     * @param  {number} date          日
+     * @return {Array}               模板
+     */
+    function generateDateTemplate(templateArray, DateCore, year, month, date) {
+        var me = this;
+        var data_Date = DateCore.Datepanel(year, month, date);
+        var dayOrder = getDayOrder.call(me, me.options.startDay);
+        templateArray.push('<table class="table-condensed">');
+        templateArray.push('<thead><tr><th colspan="7" class="switch"><span class="switch-year">' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span class="switch-month">' + me.$Lang.monthsShort[month - 1] + '月</span></th></tr>');
+        templateArray.push('<tr>');
+        for (var i = 0; i < dayOrder.length; i++) {
+            templateArray.push('<th class="dow">' + dayOrder[i] + '</th>');
+        }
+        templateArray.push('</tr>');
+        templateArray.push('</thead>');
+        templateArray.push('<tbody>');
+        for (var m = 0, k = 0; m < data_Date.length / 7; m++) {
+            templateArray.push('<tr>');
+            for (var n = 0; n < 7; n++) {
+                var reg = /old|new/g;
+                var tempString = year + '-' + autoCompletion(month) + '-' + autoCompletion(data_Date[k].date);
+                if (reg.test(data_Date[k].modal)) {
+                    tempString = '';
+                }
+                templateArray.push('<td class="day ' + data_Date[k].modal + '" title="' + tempString + '">' + data_Date[k].date + '</td>');
+                k++;
+            }
+            templateArray.push('</tr>');
+        }
+        templateArray.push('</tbody>');
+        templateArray.push('</table>');
+        return templateArray;
     }
 
     /**
@@ -243,18 +283,6 @@
         if (cellObj.hasClass('old') || cellObj.hasClass('new')) return false;
         return cellObj.prop('title');
     }
-
-    /*function getCellDate(dateboxFrame, cellObj) {
-        var tempArray = [],
-            year = parseInt(dateboxFrame.find('.switch span:eq(0)').text()),
-            month = parseInt(dateboxFrame.find('.switch span:eq(1)').text());
-        var date = parseInt(cellObj.text());
-        if (cellObj.hasClass('old') || cellObj.hasClass('new')) return false;
-        tempArray.push(year);
-        tempArray.push(autoCompletion(month));
-        tempArray.push(autoCompletion(date));
-        return tempArray.join('-');
-    }*/
 
     /**
      * [getDayOrder description]
@@ -351,6 +379,10 @@
         });
     }
 
+    /**
+     * [clearAreaStyle description]
+     * @return {[type]} 清除Cache中的区间样式
+     */
     function clearAreaStyle() {
         var tempArray = this.CACHE.currentStyle;
         for (var i = 0; i < tempArray.length; i++) {
@@ -358,11 +390,6 @@
                 tempArray[i].removeClass('pressed');
             }
         };
-        /* $('.table-condensed td.day').each(function(i, n) {
-            if ($(this).hasClass('pressed')) {
-                $(this).removeClass('pressed');
-            }
-        });*/
     }
 
     $.fn.spcalendar = function(option) {

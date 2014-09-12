@@ -18,7 +18,6 @@ DateCore.prototype.init = function() {
 };
 
 DateCore.prototype.Datepanel = function(year, month, date, num) {
-
     var me = this;
     var myDate = new Date(year, month - 1);
     var firstDay = myDate.getDay();
@@ -30,7 +29,7 @@ DateCore.prototype.Datepanel = function(year, month, date, num) {
             startDate = 1;
             loop = true;
         }
-        if (me.currentDate.month === month && !loop && date === startDate) {
+        if (me.currentDate.month === month && !loop && me.currentDate.date === startDate) {
             dateArray[i] = {
                 'date': startDate++,
                 'modal': 'active'
