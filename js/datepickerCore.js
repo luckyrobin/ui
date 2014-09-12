@@ -73,16 +73,44 @@ DateCore.prototype.getMonths = function(year, num) {
 };
 
 
-DateCore.prototype.getYears = function(startYear, num) {
+DateCore.prototype.Yearpanel = function(year, num) {
     var me = this;
     var yearNum = num || 12;
-    var yearStart = startYear || (me.currentDate.year - Math.floor(yearNum / 2));
-    var yearPanel = [];
-    for (var i = 0; i < yearNum; i++) {
-        yearPanel.push(yearStart++);
+    var yearPosition = getYearLastPos(year);
+    var yearStart = year || (me.currentDate.year - Math.floor(yearNum / 2));
+    var yearArray = new Array(12);
+    for (var i = yearPosition; i < yearArray.length; i++) {
+        if (me.currentDate.year === yearStart) {
+            yearArray[i] = {
+                'year': yearStart++,
+                'modal': 'active'
+            };
+            continue;
+        }
+        getYearLastPos(yearStart) != 1 ? yearArray[i] = {
+            'year': yearStart++,
+            'modal': ''
+        } : yearArray[i] = {
+            'year': yearStart++,
+            'modal': 'new'
+        }
     }
-    return yearPanel;
+
+    for (var i = yearPosition - 1, prevYear = year - 1; i >= 0; i--) {
+        getYearLastPos(prevYear) != 0 ? yearArray[i] = {
+            'year': prevYear--,
+            'modal': ''
+        } : yearArray[i] = {
+            'year': prevYear--,
+            'modal': 'old'
+        }
+    }
+    return yearArray;
 };
+
+function getYearLastPos(year) {
+    return String(year).charAt(String(year).length - 1);
+}
 
 /**
  * 获取当前月天数

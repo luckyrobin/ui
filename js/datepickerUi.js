@@ -227,7 +227,7 @@
 
         //绑定切换视图事件
         dateBoxDOM.find(".switch-year").one("click", function() {
-            alert(1);
+            loadYear.call(me, dateboxFrame, DateCore, year);
         });
 
         dateBoxDOM.find(".switch-month").one("click", function() {
@@ -303,6 +303,76 @@
         return dayOrder;
     }
 
+    function loadYear(dateboxFrame, DateCore, year){
+        var me = this;
+
+        var calenderInner = evalDom('<div class="calenderInner">');
+
+
+        //生成年视图模板
+        generateYearTemplate.call(me, calenderInner, DateCore, year);
+        calenderInner.push('</div>');
+        calenderInner.push('<a class="prev"></a>');
+        calenderInner.push('<a class="next"></a>');
+        console.log(calenderInner);
+
+        if (dateboxFrame.contents().length !== 0) {
+            dateboxFrame.contents().remove();
+        }
+        dateboxFrame.append(calenderInner.join(''));
+
+        //选择后重绘区间样式
+        if (me.$element.eq(0).val() !== '') {
+            completionAreaStyle.call(me, me.$element.eq(0).val(), me.options.radio ? me.$element.eq(0).val() : me.$element.eq(1).val());
+        }
+
+        //绑定翻页按钮事件
+        var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
+        dateBoxDOM.find(".next").one("click", function(event) {
+            event.stopPropagation();
+            month++;
+            if (month > 12) {
+                month = 1;
+                year++;
+            }
+            loadDate.call(me, dateboxFrame, DateCore, year, month, date);
+        });
+
+        dateBoxDOM.find(".prev").one("click", function(event) {
+            event.stopPropagation();
+            month--;
+            if (month <= 0) {
+                month = 12;
+                year--;
+            }
+            loadDate.call(me, dateboxFrame, DateCore, year, month, date);
+        });
+    }
+
+    function generateYearTemplate(templateArray,DateCore, year){
+        var me = this;
+        var data_Year = DateCore.Yearpanel(year);
+        console.log(data_Year);
+        templateArray.push('<table class="table-condensed">');
+        templateArray.push('<thead><tr><th colspan="4" class="switch"><span class="switch-year">' + data_Year[1].year + '--' +data_Year[data_Year.length-2].year + '</span></th></tr>');
+        templateArray.push('</thead>');
+        templateArray.push('<tbody>');
+        for (var m = 1; m <= data_Year.length / 4; m++) {
+            templateArray.push('<tr>');
+            for (var n = 0; n < 4; n++) {
+                var reg = /old|new/g;
+                var tempString = data_Year[m*n];
+                if (reg.test(data_Year[k].modal)) {
+                    tempString = '';
+                }
+                templateArray.push('<td class="year ' + data_Year[k].modal + '" title="' + tempString + '">' + data_Year[k].date + '</td>');
+            }
+            templateArray.push('</tr>');
+        }
+        templateArray.push('</tbody>');
+        templateArray.push('</table>');
+        return templateArray;
+    }
     //TOOL
 
     /**
