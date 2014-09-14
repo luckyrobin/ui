@@ -1,6 +1,5 @@
 (function($, DateCore) {
 
-
     var Calendar = function(element, options) {
         this.$element = $(element);
         this.$Lang = dateLanguage.cn;
@@ -17,7 +16,9 @@
         rootNode: 'calenderBox',
         startDay: 7,
         radio: false,
-        daypanel: 1
+        daypanel: 1,
+        startLimitDate: null, //禁用传入日期之后的所有日期,如果不传入任何值则默认为当天
+        endLimitDate: null //禁用传入日期之前的所有日期
     };
 
     Calendar.prototype.init = function(type, options) {
@@ -88,15 +89,15 @@
 
         //载入日期模板
         var DateCore = new me.DateCore(me.options);
-        var curYear = DateCore.currentDate.year,
-            curMonth = DateCore.currentDate.month,
-            curDate = DateCore.currentDate.date;
+        var curYear = changedYear = DateCore.currentDate.year,
+            curMonth = changedMonth = DateCore.currentDate.month,
+            curDate = changedDate = DateCore.currentDate.date;
 
         if (startInput.val() !== '') {
             var aDateSplit = startInput.val().split('-');
-            curYear = aDateSplit[0];
-            curMonth = aDateSplit[1];
-            curDate = aDateSplit[2];
+            curYear = parseInt(aDateSplit[0]);
+            curMonth = parseInt(aDateSplit[1]);
+            curDate = parseInt(aDateSplit[2]);
         }
         loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
 
@@ -109,9 +110,10 @@
         });
 
         //动态绑定日期单元格事件
-        dateboxFrame.delegate("td.day", "click", function() {
-            var str = getCellDate($(this));
-            if (!str) return false;
+        dateboxFrame.delegate("td.day", "click", function(event) {
+            event.stopPropagation();
+            changedDate = getCellDate($(this));
+            if (!changedDate) return false;
             //是否选择时间段
             if (me.options.radio) {
                 //单选
@@ -121,7 +123,7 @@
                 }
                 me.CACHE.currentStyle.push($(this));
                 me.CACHE.currentStyle[0].addClass('pressed');
-                startInput.val(str);
+                startInput.val(changedDate);
             } else {
                 //选择区间
                 if (me.CACHE.currentStyle.length >= 2) {
@@ -135,7 +137,7 @@
                 }
 
                 //line
-                timeBlock.push(str);
+                timeBlock.push(changedDate);
                 if (timeBlock.length >= 2) {
                     var mDate = getDateCompared(timeBlock);
                     startInput.val(mDate.min);
@@ -146,6 +148,23 @@
             }
         });
 
+        //动态绑定年面板单元格事件
+        dateboxFrame.delegate("td.year ", "click", function(event) {
+            event.stopPropagation();
+            changedYear = parseInt(getCellDate($(this)));
+            if (!changedYear) return false;
+            loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
+        });
+
+        //动态绑定月面板单元格事件
+        dateboxFrame.delegate("td.month ", "click", function(event) {
+            event.stopPropagation();
+            var splitStr = getCellDate($(this)).split('-');
+            changedYear = parseInt(splitStr[0]);
+            changedMonth = parseInt(splitStr[1]);
+            if (!changedMonth) return false;
+            loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
+        });
     };
 
     /**
@@ -170,9 +189,10 @@
      */
     function loadDate(dateboxFrame, DateCore, year, month, date) {
         var me = this;
-
+        var year = parseInt(year);
+        var month = parseInt(month);
+        var date = parseInt(date);
         var calenderInner = evalDom('<div class="calenderInner">');
-
         var mutipanel = {
             year: year,
             month: month,
@@ -226,12 +246,14 @@
         });
 
         //绑定切换视图事件
-        dateBoxDOM.find(".switch-year").one("click", function() {
+        dateBoxDOM.find(".switch-year").one("click", function(event) {
+            event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year);
         });
 
-        dateBoxDOM.find(".switch-month").one("click", function() {
-            alert(2);
+        dateBoxDOM.find(".switch-month").one("click", function(event) {
+            event.stopPropagation();
+            loadMonth.call(me, dateboxFrame, DateCore, year, month);
         });
     }
 
@@ -249,7 +271,7 @@
         var data_Date = DateCore.Datepanel(year, month, date);
         var dayOrder = getDayOrder.call(me, me.options.startDay);
         templateArray.push('<table class="table-condensed">');
-        templateArray.push('<thead><tr><th colspan="7" class="switch"><span class="switch-year">' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span class="switch-month">' + me.$Lang.monthsShort[month - 1] + '月</span></th></tr>');
+        templateArray.push('<thead><tr><th colspan="7" class="switch"><span class="switch-year">' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span class="switch-month">' + me.$Lang.monthsShort[month - 1] + me.$Lang.str_month + '</span></th></tr>');
         templateArray.push('<tr>');
         for (var i = 0; i < dayOrder.length; i++) {
             templateArray.push('<th class="dow">' + dayOrder[i] + '</th>');
@@ -260,7 +282,7 @@
         for (var m = 0, k = 0; m < data_Date.length / 7; m++) {
             templateArray.push('<tr>');
             for (var n = 0; n < 7; n++) {
-                var reg = /old|new/g;
+                var reg = /old|new|disabled/g;
                 var tempString = year + '-' + autoCompletion(month) + '-' + autoCompletion(data_Date[k].date);
                 if (reg.test(data_Date[k].modal)) {
                     tempString = '';
@@ -280,7 +302,7 @@
      * @return {[type]} [description]
      */
     function getCellDate(cellObj) {
-        if (cellObj.hasClass('old') || cellObj.hasClass('new')) return false;
+        if (cellObj.hasClass('old') || cellObj.hasClass('new') || cellObj.hasClass('disabled')) return false;
         return cellObj.prop('title');
     }
 
@@ -303,7 +325,14 @@
         return dayOrder;
     }
 
-    function loadYear(dateboxFrame, DateCore, year){
+    /**
+     * [loadYear description]
+     * @param  {object} dateboxFrame 外层div的jquery对象
+     * @param  {object} DateCore     实例化的core
+     * @param  {number} year         年
+     * @return {[type]}
+     */
+    function loadYear(dateboxFrame, DateCore, year) {
         var me = this;
 
         var calenderInner = evalDom('<div class="calenderInner">');
@@ -314,58 +343,94 @@
         calenderInner.push('</div>');
         calenderInner.push('<a class="prev"></a>');
         calenderInner.push('<a class="next"></a>');
-        console.log(calenderInner);
 
         if (dateboxFrame.contents().length !== 0) {
             dateboxFrame.contents().remove();
         }
         dateboxFrame.append(calenderInner.join(''));
 
-        //选择后重绘区间样式
-        if (me.$element.eq(0).val() !== '') {
-            completionAreaStyle.call(me, me.$element.eq(0).val(), me.options.radio ? me.$element.eq(0).val() : me.$element.eq(1).val());
+        //绑定翻页按钮事件
+        var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
+        dateBoxDOM.find(".next").one("click", function(event) {
+            event.stopPropagation();
+            loadYear.call(me, dateboxFrame, DateCore, year + 10);
+        });
+
+        dateBoxDOM.find(".prev").one("click", function(event) {
+            event.stopPropagation();
+            loadYear.call(me, dateboxFrame, DateCore, year - 10);
+        });
+    }
+
+    function generateYearTemplate(templateArray, DateCore, year) {
+        var me = this;
+        var data_Year = DateCore.Yearpanel(year);
+        templateArray.push('<table class="table-condensed">');
+        templateArray.push('<thead><tr><th colspan="4" class="switch"><span class="switch-year">' + data_Year[1].year + '--' + data_Year[data_Year.length - 2].year + '</span></th></tr>');
+        templateArray.push('</thead>');
+        templateArray.push('<tbody>');
+        for (var m = 0, k = 0; m < data_Year.length / 4; m++) {
+            templateArray.push('<tr>');
+            for (var n = 0; n < 4; n++) {
+                var tempString = data_Year[k].year;
+                templateArray.push('<td class="year ' + data_Year[k].modal + '" title="' + tempString + '">' + data_Year[k].year + '</td>');
+                k++;
+            }
+            templateArray.push('</tr>');
         }
+        templateArray.push('</tbody>');
+        templateArray.push('</table>');
+        return templateArray;
+    }
+
+    function loadMonth(dateboxFrame, DateCore, year, month) {
+        var me = this;
+
+        var calenderInner = evalDom('<div class="calenderInner">');
+
+        //生成月视图模板
+        generateMonthTemplate.call(me, calenderInner, DateCore, year);
+        calenderInner.push('</div>');
+        calenderInner.push('<a class="prev"></a>');
+        calenderInner.push('<a class="next"></a>');
+
+        if (dateboxFrame.contents().length !== 0) {
+            dateboxFrame.contents().remove();
+        }
+        dateboxFrame.append(calenderInner.join(''));
 
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
         dateBoxDOM.find(".next").one("click", function(event) {
             event.stopPropagation();
-            month++;
-            if (month > 12) {
-                month = 1;
-                year++;
-            }
-            loadDate.call(me, dateboxFrame, DateCore, year, month, date);
+            loadMonth.call(me, dateboxFrame, DateCore, year + 1);
         });
 
         dateBoxDOM.find(".prev").one("click", function(event) {
             event.stopPropagation();
-            month--;
-            if (month <= 0) {
-                month = 12;
-                year--;
-            }
-            loadDate.call(me, dateboxFrame, DateCore, year, month, date);
+            loadMonth.call(me, dateboxFrame, DateCore, year - 1);
+        });
+
+        //绑定切换视图事件
+        dateBoxDOM.find(".switch-year").one("click", function() {
+            event.stopPropagation();
+            loadYear.call(me, dateboxFrame, DateCore, year);
         });
     }
 
-    function generateYearTemplate(templateArray,DateCore, year){
+    function generateMonthTemplate(templateArray, DateCore, year, month) {
         var me = this;
-        var data_Year = DateCore.Yearpanel(year);
-        console.log(data_Year);
+        var data_Month = DateCore.Monthpanel(year);
         templateArray.push('<table class="table-condensed">');
-        templateArray.push('<thead><tr><th colspan="4" class="switch"><span class="switch-year">' + data_Year[1].year + '--' +data_Year[data_Year.length-2].year + '</span></th></tr>');
+        templateArray.push('<thead><tr><th colspan="4" class="switch"><span class="switch-year">' + year + me.$Lang.str_year + '</span></th></tr>');
         templateArray.push('</thead>');
         templateArray.push('<tbody>');
-        for (var m = 1; m <= data_Year.length / 4; m++) {
+        for (var m = 0, k = 0; m < data_Month.length / 4; m++) {
             templateArray.push('<tr>');
             for (var n = 0; n < 4; n++) {
-                var reg = /old|new/g;
-                var tempString = data_Year[m*n];
-                if (reg.test(data_Year[k].modal)) {
-                    tempString = '';
-                }
-                templateArray.push('<td class="year ' + data_Year[k].modal + '" title="' + tempString + '">' + data_Year[k].date + '</td>');
+                var tempString = year + '-' + autoCompletion(data_Month[k]);
+                templateArray.push('<td class="month ' + 'waiting' + '" title="' + tempString + '">' + me.$Lang.months[data_Month[k] - 1] + '</td>');
+                k++;
             }
             templateArray.push('</tr>');
         }
@@ -421,7 +486,7 @@
         if (!(arr instanceof Array)) return false;
         var obj = {};
         var sorted = arr.sort(function(date1, date2) {
-            return date1.split('-').join('') - date2.split('-').join('')
+            return dateToNumber(date1) - dateToNumber(date2);
         });
         obj.min = sorted[0];
         obj.max = sorted[sorted.length - 1];
@@ -436,12 +501,11 @@
      */
     function completionAreaStyle(min, max) {
         var me = this,
-            min = parseInt(min.split('-').join('')),
-            max = parseInt(max.split('-').join(''));
+            min = dateToNumber(min),
+            max = dateToNumber(max);
         $('.table-condensed td.day').each(function(i, n) {
-            var t = parseInt($(this).prop('title').split('-').join(''));
+            var t = dateToNumber($(this).prop('title'));
             if (isNaN(t)) return;
-            // console.log(t >= min,t,min);
             if (t >= min && t <= max) {
                 me.CACHE.currentStyle.push($(this));
                 $(this).addClass('pressed');
@@ -460,6 +524,15 @@
                 tempArray[i].removeClass('pressed');
             }
         };
+    }
+
+    /**
+     * [dateToNumber description]
+     * @param  {String} date 日期型字符串
+     * @return {Number}      数字化后的日期
+     */
+    function dateToNumber(date) {
+        return parseInt(date.split('-').join(''));
     }
 
     $.fn.spcalendar = function(option) {

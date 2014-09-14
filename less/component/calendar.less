@@ -23,7 +23,7 @@
        max-width: 100%;
        background-color: transparent;
        border-spacing: 0;
-       padding-right: 10px;
+       -padding-right: 10px;
         text-align: center;
         thead {
             background-color: #fafafa;
@@ -56,7 +56,7 @@
                     color: #47b7e6;
                     border-color: #47b7e6;
                 }
-                &.new,&.old{
+                &.new,&.old,&.disabled{
                     color: #c7c7c7;
                     cursor: not-allowed;
                 }
@@ -66,6 +66,12 @@
                 &.pressed{
                     background-color: #47b7e6;
                     color: #fff;
+                }
+                &.year{
+                    padding: 10px; 
+                }
+                &.month{
+                    padding: 10px; 
                 }
             }
         }

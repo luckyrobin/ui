@@ -7,12 +7,11 @@
     <style type="text/css">
     body {
         height: 1000px;
-        background: url(http://www.lanrentuku.com/savepic/img/allimg/1206/5-1206010S333-50.gif);
+        background: url(http://luckyrobin.qiniudn.com/5-1206010S333-50.gif);
     }
     .container {
         width: 600px;
         margin: 0 auto;
-        margin-top: 100px;
         padding: 20px 20px 40px;
         background: rgba(0, 0, 0, 0.5);
         border: 1px solid #000;
@@ -59,8 +58,20 @@
             <span class="space">--</span>
             <input type="text" class="ipt2_left date9" value="" />
         </div>
+        <div style="margin-top: 50px;">
+            <h4>日期区间选择--禁用今日之后日期</h4>
+            <input type="text" class="ipt2_left date10" value="" />
+            <span class="space">--</span>
+            <input type="text" class="ipt2_left date10" value="" />
+        </div>
+        <div style="margin-top: 50px;">
+            <h4>日期区间选择--禁用一个区间的日期</h4>
+            <input type="text" class="ipt2_left date11" value="" />
+            <span class="space">--</span>
+            <input type="text" class="ipt2_left date11" value="" />
+        </div>
     </div>
-    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
+    <script src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
     <script type="text/javascript" src="js/datepickerLan.js"></script>
     <script type="text/javascript" src="js/datepickerCore.js"></script>
     <script type="text/javascript" src="js/datepickerUi.js"></script>
@@ -72,6 +83,16 @@
         $(".date8").spcalendar({});
         $(".date9").spcalendar({
             daypanel:3
+        });
+        $(".date10").spcalendar({
+        	daypanel:3,
+        	startLimitDate:''
+           //endLimitDate:'2014-09-14'
+        });
+        $(".date11").spcalendar({
+        	daypanel:3,
+        	startLimitDate:'2014-09-20',
+           	endLimitDate:'2014-09-02'
         });
     })
     </script>
