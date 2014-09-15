@@ -1,9 +1,10 @@
 (function(window) {
-    var DateCore = function(config) {
+    "use strict";
+    function DateCore(config) {
         this.config = config;
         this.init();
         //console.log(config);
-    };
+    }
 
     DateCore.prototype.init = function() {
         var me = this;
@@ -20,9 +21,9 @@
 
     DateCore.prototype.Datepanel = function(year, month, date, num) {
         var me = this;
-        var year = parseInt(year);
-        var month = parseInt(month);
-        var date = parseInt(date);
+        year = parseInt(year);
+        month = parseInt(month);
+        date = parseInt(date);
         var myDate = new Date(year, month - 1);
         var firstDay = myDate.getDay();
         var monthDayNum = monthDays(year, month - 1);
@@ -44,12 +45,12 @@
                 loop = true;
             }
 
-            loop ? dateArray[i] = {
-                'date': startDate++,
-                'modal': 'new'
-            } : dateArray[i] = {
+            !loop ? dateArray[i] = {
                 'date': startDate++,
                 'modal': ''
+            } : dateArray[i] = {
+                'date': startDate++,
+                'modal': 'new'
             };
 
 
@@ -72,8 +73,8 @@
             }
         }
 
-        for (var i = firstDay - 1, startDate = monthDays(year, (month - 2) < 0 ? 11 : (month - 2)); i >= 0; i--) {
-            dateArray[i] = {
+        for (var j = firstDay - 1, startDate = monthDays(year, (month - 2) < 0 ? 11 : (month - 2)); j >= 0; j--) {
+            dateArray[j] = {
                 'date': startDate--,
                 'modal': 'old'
             };
@@ -102,9 +103,7 @@
 
     DateCore.prototype.Yearpanel = function(year, num) {
         var me = this;
-        var year = parseInt(year);
-        var month = parseInt(month);
-        var date = parseInt(date);
+        year = parseInt(year,10);
         var yearNum = num || 12;
         var yearCurrent = year;
         var yearPosition = getYearLastPos(yearCurrent);
@@ -116,13 +115,13 @@
                 yearArray[i] = {
                     'year': yearStart++,
                     'modal': 'old'
-                }
+                };
                 continue;
             } else if (i === 11) {
                 yearArray[i] = {
                     'year': yearStart++,
                     'modal': 'new'
-                }
+                };
                 continue;
             }
 
@@ -137,9 +136,9 @@
             yearArray[i] = {
                 'year': yearStart++,
                 'modal': ''
-            }
+            };
 
-        };
+        }
         return yearArray;
     };
 
@@ -155,7 +154,7 @@
      */
     function monthDays(year, month) {
         var monthArray = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-        if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+        if (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)) {
             monthArray[1] = 29;
         }
         if (month >= 0) {
@@ -185,7 +184,7 @@
     }
 
     function hasLimitExec(limitexec) {
-        if (limitexec === null) return;
+        if (limitexec === null) {return;}
         if (limitexec === '') {
             var today = this.currentDate.year + '-' + autoCompletion(this.currentDate.month) + '-' + autoCompletion(this.currentDate.date);
             return dateToNumber(today);

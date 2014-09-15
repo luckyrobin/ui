@@ -5,97 +5,101 @@
     <meta http-equiv="Content-Type" content="charset=UTF-8">
     <title>demo</title>
     <style type="text/css">
-    body {
-        height: 1000px;
-        background: url(http://luckyrobin.qiniudn.com/5-1206010S333-50.gif);
-    }
-    .container {
-        width: 600px;
-        margin: 0 auto;
-        padding: 20px 20px 40px;
-        background: rgba(0, 0, 0, 0.5);
-        border: 1px solid #000;
-    }
-    .container input {
-        width: 200px;
-        height: 28px;
-        line-height: 28px;
-        margin: 0;
-        text-indent: 5px;
-        border: 1px solid #DFDFDF;
-        border-radius: 5px;
-        text-align: center;
-        color: blue;
-    }
-    span.space {
-        color: #fff;
-    }
-    .container h4{
-        padding: 5px 0;
-        color: #fff;
-        font-size: 14px;
-        font-family: 'Microsoft YaHei';
-    }
+        body {
+            height: 1000px;
+            background: url(http://luckyrobin.qiniudn.com/5-1206010S333-50.gif);
+        }
+
+        .container {
+            width: 600px;
+            margin: 0 auto;
+            padding: 20px 20px 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #000;
+        }
+
+        .container input {
+            width: 200px;
+            height: 28px;
+            line-height: 28px;
+            margin: 0;
+            text-indent: 5px;
+            border: 1px solid #DFDFDF;
+            border-radius: 5px;
+            text-align: center;
+            color: blue;
+        }
+
+        span.space {
+            color: #fff;
+        }
+
+        .container h4 {
+            padding: 5px 0;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'Microsoft YaHei', arial, sans-serif;
+        }
     </style>
 </head>
 
 <body>
-    <!--头部S-->
-    <div class="container">
-        <div>
-            <h4>单日期选择</h4>
-            <input type="text" class="ipt2_left date7" value="" />
-        </div>
-        <div style="margin-top: 50px;">
-            <h4>日期区间选择</h4>
-            <input type="text" class="ipt2_left date8" value="" />
-            <span class="space">--</span>
-            <input type="text" class="ipt2_left date8" value="" />
-        </div>
-        <div style="margin-top: 50px;">
-            <h4>日期区间选择--多日期面板</h4>
-            <input type="text" class="ipt2_left date9" value="" />
-            <span class="space">--</span>
-            <input type="text" class="ipt2_left date9" value="" />
-        </div>
-        <div style="margin-top: 50px;">
-            <h4>日期区间选择--禁用今日之后日期</h4>
-            <input type="text" class="ipt2_left date10" value="" />
-            <span class="space">--</span>
-            <input type="text" class="ipt2_left date10" value="" />
-        </div>
-        <div style="margin-top: 50px;">
-            <h4>日期区间选择--禁用一个区间的日期</h4>
-            <input type="text" class="ipt2_left date11" value="" />
-            <span class="space">--</span>
-            <input type="text" class="ipt2_left date11" value="" />
-        </div>
+<!--头部S-->
+<div class="container">
+    <div>
+        <h4>单日期选择</h4>
+        <input type="text" class="ipt2_left date7" value=""/>
     </div>
-    <script src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
-    <script type="text/javascript" src="js/datepickerLan.js"></script>
-    <script type="text/javascript" src="js/datepickerCore.js"></script>
-    <script type="text/javascript" src="js/datepickerUi.js"></script>
-    <script type="text/javascript">
-    $(function() {
+    <div style="margin-top: 50px;">
+        <h4>日期区间选择</h4>
+        <input type="text" class="ipt2_left date8" value=""/>
+        <span class="space">--</span>
+        <input type="text" class="ipt2_left date8" value=""/>
+    </div>
+    <div style="margin-top: 50px;">
+        <h4>日期区间选择--多日期面板</h4>
+        <input type="text" class="ipt2_left date9" value=""/>
+        <span class="space">--</span>
+        <input type="text" class="ipt2_left date9" value=""/>
+    </div>
+    <div style="margin-top: 50px;">
+        <h4>日期区间选择--禁用今日之后日期</h4>
+        <input type="text" class="ipt2_left date10" value=""/>
+        <span class="space">--</span>
+        <input type="text" class="ipt2_left date10" value=""/>
+    </div>
+    <div style="margin-top: 50px;">
+        <h4>日期区间选择--禁用一个区间的日期</h4>
+        <input type="text" class="ipt2_left date11" value=""/>
+        <span class="space">--</span>
+        <input type="text" class="ipt2_left date11" value=""/>
+    </div>
+</div>
+<script src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/datepickerLan.js"></script>
+<script type="text/javascript" src="js/datepickerCore.js"></script>
+<script type="text/javascript" src="js/datepickerUi.js"></script>
+<script type="text/javascript">
+    $(function () {
         $(".date7").spcalendar({
             radio: true
         });
         $(".date8").spcalendar({});
         $(".date9").spcalendar({
-            daypanel:3
+            daypanel: 3
         });
         $(".date10").spcalendar({
-        	daypanel:3,
-        	startLimitDate:''
-           //endLimitDate:'2014-09-14'
+            daypanel: 3,
+            startLimitDate: ''
+            //endLimitDate:'2014-09-14'
         });
         $(".date11").spcalendar({
-        	daypanel:3,
-        	startLimitDate:'2014-09-20',
-           	endLimitDate:'2014-09-02'
+            daypanel: 3,
+            startLimitDate: '2014-09-20',
+            endLimitDate: '2014-09-02'
         });
     })
-    </script>
+</script>
 </body>
 
 </html>

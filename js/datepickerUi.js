@@ -1,6 +1,5 @@
-(function($, DateCore) {
-
-    var Calendar = function(element, options) {
+(function ($, DateCore, dateLanguage) {
+    var Calendar = function (element, options) {
         this.$element = $(element);
         this.$Lang = dateLanguage.cn;
         this.CACHE = {
@@ -14,14 +13,15 @@
     Calendar.DEFAULTS = {
         css: 'css/ui.css',
         rootNode: 'calenderBox',
-        startDay: 7,
+        weekStart: 7,
         radio: false,
         daypanel: 1,
         startLimitDate: null, //禁用传入日期之后的所有日期,如果不传入任何值则默认为当天
-        endLimitDate: null //禁用传入日期之前的所有日期
+        endLimitDate: null, //禁用传入日期之前的所有日期
+        callbackFun: '' //选择后回调方法
     };
 
-    Calendar.prototype.init = function(type, options) {
+    Calendar.prototype.init = function (type, options) {
         var me = this;
         me.type = type;
         me.options = me.getOptions(options);
@@ -45,15 +45,15 @@
     };
 
     //混合config
-    Calendar.prototype.getOptions = function(options) {
+    Calendar.prototype.getOptions = function (options) {
         options = $.extend({}, Calendar.DEFAULTS, options);
         return options;
     };
 
-    Calendar.prototype.inputReady = function() {
+    Calendar.prototype.inputReady = function () {
         var me = this;
         me.$element.prop("readonly", "readonly");
-        me.$element.on('click', function() {
+        me.$element.on('click', function () {
             if (isExist.call(me)) {
                 me.calendarClose();
             } else {
@@ -67,7 +67,7 @@
      * [calendarShow 打开日历]
      * @return {[type]} [description]
      */
-    Calendar.prototype.calendarShow = function() {
+    Calendar.prototype.calendarShow = function () {
         this.calendarClose();
         var me = this;
         var inputDom = me.$element;
@@ -89,31 +89,35 @@
 
         //载入日期模板
         var DateCore = new me.DateCore(me.options);
-        var curYear = changedYear = DateCore.currentDate.year,
-            curMonth = changedMonth = DateCore.currentDate.month,
-            curDate = changedDate = DateCore.currentDate.date;
-
+        var curYear = DateCore.currentDate.year,
+            curMonth = DateCore.currentDate.month,
+            curDate = DateCore.currentDate.date;
+        var changedYear = curYear,
+            changedMonth = curMonth,
+            changedDate = curDate;
         if (startInput.val() !== '') {
             var aDateSplit = startInput.val().split('-');
-            curYear = parseInt(aDateSplit[0]);
-            curMonth = parseInt(aDateSplit[1]);
-            curDate = parseInt(aDateSplit[2]);
+            curYear = parseInt(aDateSplit[0], 10);
+            curMonth = parseInt(aDateSplit[1], 10);
+            curDate = parseInt(aDateSplit[2], 10);
         }
         loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
 
         //绑定document关闭事件
-        $(document).on('click.clearDom', function(event) {
+        $(document).on('click.clearDom', function (event) {
             var elem = $(event.target);
-            if (elem.closest('.' + me.options.rootNode + '').length == 0 && elem.closest(me.$element).length == 0) {
+            if (elem.closest('.' + me.options.rootNode + '').length === 0 && elem.closest(me.$element).length === 0) {
                 me.calendarClose();
             }
         });
 
         //动态绑定日期单元格事件
-        dateboxFrame.delegate("td.day", "click", function(event) {
+        dateboxFrame.delegate("td.day", "click", function (event) {
             event.stopPropagation();
             changedDate = getCellDate($(this));
-            if (!changedDate) return false;
+            if (!changedDate) {
+                return false;
+            }
             //是否选择时间段
             if (me.options.radio) {
                 //单选
@@ -124,6 +128,7 @@
                 me.CACHE.currentStyle.push($(this));
                 me.CACHE.currentStyle[0].addClass('pressed');
                 startInput.val(changedDate);
+                (me.options.callbackFun && typeof(me.options.callbackFun) === "function") && me.options.callbackFun();
             } else {
                 //选择区间
                 if (me.CACHE.currentStyle.length >= 2) {
@@ -144,25 +149,30 @@
                     endInput.val(mDate.max);
                     completionAreaStyle.call(me, mDate.min, mDate.max);
                     timeBlock.length = 0;
+                    (me.options.callbackFun && typeof(me.options.callbackFun) === "function") && me.options.callbackFun();
                 }
             }
         });
 
         //动态绑定年面板单元格事件
-        dateboxFrame.delegate("td.year ", "click", function(event) {
+        dateboxFrame.delegate("td.year ", "click", function (event) {
             event.stopPropagation();
-            changedYear = parseInt(getCellDate($(this)));
-            if (!changedYear) return false;
+            changedYear = parseInt(getCellDate($(this)), 10);
+            if (!changedYear) {
+                return false;
+            }
             loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
         });
 
         //动态绑定月面板单元格事件
-        dateboxFrame.delegate("td.month ", "click", function(event) {
+        dateboxFrame.delegate("td.month ", "click", function (event) {
             event.stopPropagation();
             var splitStr = getCellDate($(this)).split('-');
-            changedYear = parseInt(splitStr[0]);
-            changedMonth = parseInt(splitStr[1]);
-            if (!changedMonth) return false;
+            changedYear = parseInt(splitStr[0], 10);
+            changedMonth = parseInt(splitStr[1], 10);
+            if (!changedMonth) {
+                return false;
+            }
             loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
         });
     };
@@ -171,7 +181,7 @@
      * [calendarClose 关闭日历]
      * @return {[type]} [description]
      */
-    Calendar.prototype.calendarClose = function() {
+    Calendar.prototype.calendarClose = function () {
         var me = this;
         var calendarTemp = $('.' + me.options.rootNode + '');
         $(document).off('click.clearDom');
@@ -189,9 +199,9 @@
      */
     function loadDate(dateboxFrame, DateCore, year, month, date) {
         var me = this;
-        var year = parseInt(year);
-        var month = parseInt(month);
-        var date = parseInt(date);
+        year = parseInt(year, 10);
+        month = parseInt(month, 10);
+        date = parseInt(date, 10);
         var calenderInner = evalDom('<div class="calenderInner">');
         var mutipanel = {
             year: year,
@@ -206,7 +216,7 @@
                 mutipanel.year++;
             }
             generateDateTemplate.call(me, calenderInner, DateCore, mutipanel.year, mutipanel.month++, mutipanel.date);
-        };
+        }
 
         calenderInner.push('</div>');
         calenderInner.push('<a class="prev"></a>');
@@ -224,8 +234,8 @@
         }
 
         //绑定翻页按钮事件
-        var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
-        dateBoxDOM.find(".next").one("click", function(event) {
+        var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
+        dateBoxDOM.find(".next").one("click", function (event) {
             event.stopPropagation();
             month++;
             if (month > 12) {
@@ -235,7 +245,7 @@
             loadDate.call(me, dateboxFrame, DateCore, year, month, date);
         });
 
-        dateBoxDOM.find(".prev").one("click", function(event) {
+        dateBoxDOM.find(".prev").one("click", function (event) {
             event.stopPropagation();
             month--;
             if (month <= 0) {
@@ -246,12 +256,12 @@
         });
 
         //绑定切换视图事件
-        dateBoxDOM.find(".switch-year").one("click", function(event) {
+        dateBoxDOM.find(".switch-year").one("click", function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year);
         });
 
-        dateBoxDOM.find(".switch-month").one("click", function(event) {
+        dateBoxDOM.find(".switch-month").one("click", function (event) {
             event.stopPropagation();
             loadMonth.call(me, dateboxFrame, DateCore, year, month);
         });
@@ -269,7 +279,7 @@
     function generateDateTemplate(templateArray, DateCore, year, month, date) {
         var me = this;
         var data_Date = DateCore.Datepanel(year, month, date);
-        var dayOrder = getDayOrder.call(me, me.options.startDay);
+        var dayOrder = getDayOrder.call(me, me.options.weekStart);
         templateArray.push('<table class="table-condensed">');
         templateArray.push('<thead><tr><th colspan="7" class="switch"><span class="switch-year">' + year + me.$Lang.str_year + '</span>&nbsp;&nbsp;<span class="switch-month">' + me.$Lang.monthsShort[month - 1] + me.$Lang.str_month + '</span></th></tr>');
         templateArray.push('<tr>');
@@ -302,24 +312,27 @@
      * @return {[type]} [description]
      */
     function getCellDate(cellObj) {
-        if (cellObj.hasClass('old') || cellObj.hasClass('new') || cellObj.hasClass('disabled')) return false;
+        if (cellObj.hasClass('old') || cellObj.hasClass('new') || cellObj.hasClass('disabled')) {
+            return false;
+        }
         return cellObj.prop('title');
     }
 
     /**
      * [getDayOrder description]
-     * @param  {number} startDay 起始星期
+     * @param  {number} weekStart 起始星期
      * @return {Array}          返回日期顺序序列
      */
-    function getDayOrder(startDay) {
-        var dayOrder = [];
-        for (var i = 0, j = startDay - 1; i < this.$Lang.daysShort.length; i++) {
-            if (j === this.$Lang.daysShort.length - 1) {
-                dayOrder.push(this.$Lang.daysShort[j]);
+    function getDayOrder(weekStart) {
+        var me = this,
+            dayOrder = [];
+        for (var i = 0, j = weekStart - 1; i < me.$Lang.daysShort.length; i++) {
+            if (j === me.$Lang.daysShort.length - 1) {
+                dayOrder.push(me.$Lang.daysShort[j]);
                 j = 0;
                 continue;
             }
-            dayOrder.push(this.$Lang.daysShort[j]);
+            dayOrder.push(me.$Lang.daysShort[j]);
             j++;
         }
         return dayOrder;
@@ -337,7 +350,6 @@
 
         var calenderInner = evalDom('<div class="calenderInner">');
 
-
         //生成年视图模板
         generateYearTemplate.call(me, calenderInner, DateCore, year);
         calenderInner.push('</div>');
@@ -350,13 +362,13 @@
         dateboxFrame.append(calenderInner.join(''));
 
         //绑定翻页按钮事件
-        var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
-        dateBoxDOM.find(".next").one("click", function(event) {
+        var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
+        dateBoxDOM.find(".next").one("click", function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year + 10);
         });
 
-        dateBoxDOM.find(".prev").one("click", function(event) {
+        dateBoxDOM.find(".prev").one("click", function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year - 10);
         });
@@ -400,19 +412,19 @@
         dateboxFrame.append(calenderInner.join(''));
 
         //绑定翻页按钮事件
-        var dateBoxDOM = me.$element.last().nextAll('.' + this.options.rootNode + '');
-        dateBoxDOM.find(".next").one("click", function(event) {
+        var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
+        dateBoxDOM.find(".next").one("click", function (event) {
             event.stopPropagation();
             loadMonth.call(me, dateboxFrame, DateCore, year + 1);
         });
 
-        dateBoxDOM.find(".prev").one("click", function(event) {
+        dateBoxDOM.find(".prev").one("click", function (event) {
             event.stopPropagation();
             loadMonth.call(me, dateboxFrame, DateCore, year - 1);
         });
 
         //绑定切换视图事件
-        dateBoxDOM.find(".switch-year").one("click", function() {
+        dateBoxDOM.find(".switch-year").one("click", function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year);
         });
@@ -438,6 +450,7 @@
         templateArray.push('</table>');
         return templateArray;
     }
+
     //TOOL
 
     /**
@@ -483,9 +496,9 @@
      * @return {Object}     包含最大和最小日期的对象
      */
     function getDateCompared(arr) {
-        if (!(arr instanceof Array)) return false;
+        if (!(arr instanceof Array)) {return false;}
         var obj = {};
-        var sorted = arr.sort(function(date1, date2) {
+        var sorted = arr.sort(function (date1, date2) {
             return dateToNumber(date1) - dateToNumber(date2);
         });
         obj.min = sorted[0];
@@ -500,12 +513,12 @@
      * @return {[type]}     补全区间内样式
      */
     function completionAreaStyle(min, max) {
-        var me = this,
-            min = dateToNumber(min),
-            max = dateToNumber(max);
-        $('.table-condensed td.day').each(function(i, n) {
+        var me = this;
+        min = dateToNumber(min);
+        max = dateToNumber(max);
+        $('.table-condensed td.day').each(function (i, n) {
             var t = dateToNumber($(this).prop('title'));
-            if (isNaN(t)) return;
+            if (isNaN(t)) {return;}
             if (t >= min && t <= max) {
                 me.CACHE.currentStyle.push($(this));
                 $(this).addClass('pressed');
@@ -523,7 +536,7 @@
             if (tempArray[i].hasClass('pressed')) {
                 tempArray[i].removeClass('pressed');
             }
-        };
+        }
     }
 
     /**
@@ -532,12 +545,12 @@
      * @return {Number}      数字化后的日期
      */
     function dateToNumber(date) {
-        return parseInt(date.split('-').join(''));
+        return parseInt(date.split('-').join(''), 10);
     }
 
-    $.fn.spcalendar = function(option) {
-        var options = typeof option == 'object' && option;
+    $.fn.spcalendar = function (option) {
+        var options = typeof option === 'object' && option;
         return new Calendar(this, options);
     };
 
-})(jQuery, DateCore);
+})(jQuery, DateCore, dateLanguage);
