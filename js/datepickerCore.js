@@ -21,9 +21,9 @@
 
     DateCore.prototype.Datepanel = function(year, month, date, num) {
         var me = this;
-        year = parseInt(year);
-        month = parseInt(month);
-        date = parseInt(date);
+        year = parseInt(year,10);
+        month = parseInt(month,10);
+        date = parseInt(date,10);
         var myDate = new Date(year, month - 1);
         var firstDay = myDate.getDay();
         var monthDayNum = monthDays(year, month - 1);
@@ -143,7 +143,7 @@
     };
 
     function getYearLastPos(year) {
-        return parseInt(String(year).charAt(String(year).length - 1));
+        return parseInt(String(year).charAt(String(year).length - 1),10);
     }
 
     /**
@@ -171,7 +171,7 @@
      */
     function dateToNumber(date) {
         //if(typeof date !== 'string') return;
-        return parseInt(date.split('-').join(''));
+        return parseInt(date.split('-').join(''),10);
     }
 
     /**
