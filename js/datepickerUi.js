@@ -65,7 +65,7 @@
      * [calendarShow 打开日历]
      * @return {[type]} [description]
      */
-    Calendar.prototype.calendarShow = function () {
+    Calendar.prototype.calendarShow = function (mode) {
         this.calendarClose();
         var me = this;
         var inputDom = me.$element;
@@ -99,12 +99,25 @@
             curMonth = parseInt(aDateSplit[1], 10);
             curDate = parseInt(aDateSplit[2], 10);
         }
-        loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
+
+        switch (mode) {
+            case 'date':
+                loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
+                break;
+            case 'month':
+                loadMonth.call(me, dateboxFrame, DateCore, curYear, curMonth);
+                break;
+            case 'year':
+                loadYear.call(me, dateboxFrame, DateCore, curYear);
+                break;
+            default :
+                loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
+        }
 
         //绑定document关闭事件
         $(document).on('click.clearDom', function (event) {
             var elem = $(event.target);
-            if (elem.closest('.' + me.options.rootNode + '').length === 0 && elem.closest(me.$element).length === 0) {
+            if (elem.closest('.' + me.options.rootNode + '').length === 0 && elem.closest(me.$element).length === 0 && elem.closest('*[data-trigger = "spcalendar"]').length === 0) {
                 me.calendarClose();
             }
         });
