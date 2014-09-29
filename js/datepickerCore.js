@@ -1,12 +1,13 @@
-(function(window) {
-    "use strict";
+(function (window) {
+    'use strict';
     function DateCore(config) {
         this.config = config;
+        this.WEEKORDER = [0,6,5,4,3,2,1];
         this.init();
         //console.log(config);
     }
 
-    DateCore.prototype.init = function() {
+    DateCore.prototype.init = function () {
         var me = this;
         var nowDate = new Date();
         me.currentDate = {
@@ -19,11 +20,11 @@
         };
     };
 
-    DateCore.prototype.Datepanel = function(year, month, date, num) {
+    DateCore.prototype.Datepanel = function (year, month, date) {
         var me = this;
-        year = parseInt(year,10);
-        month = parseInt(month,10);
-        date = parseInt(date,10);
+        year = parseInt(year, 10);
+        month = parseInt(month, 10);
+        date = parseInt(date, 10);
         var myDate = new Date(year, month - 1);
         var firstDay = myDate.getDay();
         var monthDayNum = monthDays(year, month - 1);
@@ -33,13 +34,12 @@
         var startLimitDate = me.config.startLimitDate;
         var endLimitDate = me.config.endLimitDate;
         var curDate = 0;
-
+        var weekStart = me.WEEKORDER[me.config.weekStart-1];
         if (startLimitDate !== null || endLimitDate !== null) {
             startLimitDate = hasLimitExec.call(me, startLimitDate);
             endLimitDate = hasLimitExec.call(me, endLimitDate);
         }
-
-        for (var i = firstDay, startDate = 1; i < dateArray.length; i++) {
+        for (var i = firstDay+weekStart-1, startDate = 1; i < dateArray.length; i++) {
             if (startDate > monthDayNum) {
                 startDate = 1;
                 loop = true;
@@ -68,12 +68,11 @@
                 dateArray[i].modal += ' disabled';
             }
 
-            if ((startLimitDate && endLimitDate) && (curDate < startLimitDate && curDate > endLimitDate)){
-                 dateArray[i].modal += ' disabled';
+            if ((startLimitDate && endLimitDate) && (curDate < startLimitDate && curDate > endLimitDate)) {
+                dateArray[i].modal += ' disabled';
             }
         }
-
-        for (var j = firstDay - 1, startDate = monthDays(year, (month - 2) < 0 ? 11 : (month - 2)); j >= 0; j--) {
+        for (var j = firstDay+weekStart-2, startDate = monthDays(year, (month - 2) < 0 ? 11 : (month - 2)); j >= 0; j--) {
             dateArray[j] = {
                 'date': startDate--,
                 'modal': 'old'
@@ -82,14 +81,14 @@
         return dateArray;
     };
 
-    DateCore.prototype.getDates = function(year, month, num) {
+    DateCore.prototype.getDates = function (year, month, num) {
         var me = this;
         var monthDayNum = new Date(year, month, 0).getDate();
 
         // return new Date(year,month-1);
     };
 
-    DateCore.prototype.Monthpanel = function(year, num) {
+    DateCore.prototype.Monthpanel = function (year, num) {
         var me = this;
         var monthNum = num || 12;
         var monthStart = 1;
@@ -101,15 +100,14 @@
     };
 
 
-    DateCore.prototype.Yearpanel = function(year, num) {
+    DateCore.prototype.Yearpanel = function (year, num) {
         var me = this;
-        year = parseInt(year,10);
+        year = parseInt(year, 10);
         var yearNum = num || 12;
         var yearCurrent = year;
         var yearPosition = getYearLastPos(yearCurrent);
         var yearStart = yearCurrent - yearPosition - 1;
         var yearArray = new Array(yearNum);
-        var loop = false;
         for (var i = 0; i < yearArray.length; i++) {
             if (i === 0) {
                 yearArray[i] = {
@@ -143,7 +141,7 @@
     };
 
     function getYearLastPos(year) {
-        return parseInt(String(year).charAt(String(year).length - 1),10);
+        return parseInt(String(year).charAt(String(year).length - 1), 10);
     }
 
     /**
@@ -171,7 +169,7 @@
      */
     function dateToNumber(date) {
         //if(typeof date !== 'string') return;
-        return parseInt(date.split('-').join(''),10);
+        return parseInt(date.split('-').join(''), 10);
     }
 
     /**
@@ -180,11 +178,13 @@
      * @return {String}     返回补全后的数
      */
     function autoCompletion(num) {
-        return !/^\d{2}$/.test(num) && num < 10 ? "0" + num : num;
+        return !/^\d{2}$/.test(num) && num < 10 ? '0' + num : num;
     }
 
     function hasLimitExec(limitexec) {
-        if (limitexec === null) {return;}
+        if (limitexec === null) {
+            return;
+        }
         if (limitexec === '') {
             var today = this.currentDate.year + '-' + autoCompletion(this.currentDate.month) + '-' + autoCompletion(this.currentDate.date);
             return dateToNumber(today);

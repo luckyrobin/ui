@@ -9,7 +9,6 @@
         this.init('type', options);
     };
 
-
     Calendar.DEFAULTS = {
         css: 'css/ui.css',
         rootNode: 'calenderBox',
@@ -52,7 +51,7 @@
 
     Calendar.prototype.inputReady = function () {
         var me = this;
-        me.$element.prop("readonly", "readonly");
+        me.$element.prop('readonly', 'readonly');
         me.$element.on('click', function () {
             if (isExist.call(me)) {
                 me.calendarClose();
@@ -60,7 +59,6 @@
                 me.calendarShow();
             }
         });
-
     };
 
     /**
@@ -112,7 +110,7 @@
         });
 
         //动态绑定日期单元格事件
-        dateboxFrame.delegate("td.day", "click", function (event) {
+        dateboxFrame.delegate('td.day', 'click', function (event) {
             event.stopPropagation();
             changedDate = getCellDate($(this));
             if (!changedDate) {
@@ -128,7 +126,7 @@
                 me.CACHE.currentStyle.push($(this));
                 me.CACHE.currentStyle[0].addClass('pressed');
                 startInput.val(changedDate);
-                (me.options.callbackFun && typeof(me.options.callbackFun) === "function") && me.options.callbackFun();
+                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun();
             } else {
                 //选择区间
                 if (me.CACHE.currentStyle.length >= 2) {
@@ -149,13 +147,13 @@
                     endInput.val(mDate.max);
                     completionAreaStyle.call(me, mDate.min, mDate.max);
                     timeBlock.length = 0;
-                    (me.options.callbackFun && typeof(me.options.callbackFun) === "function") && me.options.callbackFun();
+                    (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun();
                 }
             }
         });
 
         //动态绑定年面板单元格事件
-        dateboxFrame.delegate("td.year ", "click", function (event) {
+        dateboxFrame.delegate('td.year', 'click', function (event) {
             event.stopPropagation();
             changedYear = parseInt(getCellDate($(this)), 10);
             if (!changedYear) {
@@ -165,7 +163,7 @@
         });
 
         //动态绑定月面板单元格事件
-        dateboxFrame.delegate("td.month ", "click", function (event) {
+        dateboxFrame.delegate('td.month', 'click', function (event) {
             event.stopPropagation();
             var splitStr = getCellDate($(this)).split('-');
             changedYear = parseInt(splitStr[0], 10);
@@ -235,7 +233,7 @@
 
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
-        dateBoxDOM.find(".next").one("click", function (event) {
+        dateBoxDOM.find('.next').one('click', function (event) {
             event.stopPropagation();
             month++;
             if (month > 12) {
@@ -245,7 +243,7 @@
             loadDate.call(me, dateboxFrame, DateCore, year, month, date);
         });
 
-        dateBoxDOM.find(".prev").one("click", function (event) {
+        dateBoxDOM.find('.prev').one('click', function (event) {
             event.stopPropagation();
             month--;
             if (month <= 0) {
@@ -256,12 +254,12 @@
         });
 
         //绑定切换视图事件
-        dateBoxDOM.find(".switch-year").one("click", function (event) {
+        dateBoxDOM.find('.switch-year').one('click', function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year);
         });
 
-        dateBoxDOM.find(".switch-month").one("click", function (event) {
+        dateBoxDOM.find('.switch-month').one('click', function (event) {
             event.stopPropagation();
             loadMonth.call(me, dateboxFrame, DateCore, year, month);
         });
@@ -363,12 +361,12 @@
 
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
-        dateBoxDOM.find(".next").one("click", function (event) {
+        dateBoxDOM.find('.next').one('click', function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year + 10);
         });
 
-        dateBoxDOM.find(".prev").one("click", function (event) {
+        dateBoxDOM.find('.prev').one('click', function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year - 10);
         });
@@ -413,18 +411,18 @@
 
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
-        dateBoxDOM.find(".next").one("click", function (event) {
+        dateBoxDOM.find('.next').one('click', function (event) {
             event.stopPropagation();
             loadMonth.call(me, dateboxFrame, DateCore, year + 1);
         });
 
-        dateBoxDOM.find(".prev").one("click", function (event) {
+        dateBoxDOM.find('.prev').one('click', function (event) {
             event.stopPropagation();
             loadMonth.call(me, dateboxFrame, DateCore, year - 1);
         });
 
         //绑定切换视图事件
-        dateBoxDOM.find(".switch-year").one("click", function (event) {
+        dateBoxDOM.find('.switch-year').one('click', function (event) {
             event.stopPropagation();
             loadYear.call(me, dateboxFrame, DateCore, year);
         });
@@ -487,7 +485,7 @@
      * @return {String}     返回补全后的数
      */
     function autoCompletion(num) {
-        return !/^\d{2}$/.test(num) && num < 10 ? "0" + num : num;
+        return !/^\d{2}$/.test(num) && num < 10 ? '0' + num : num;
     }
 
     /**
@@ -496,7 +494,9 @@
      * @return {Object}     包含最大和最小日期的对象
      */
     function getDateCompared(arr) {
-        if (!(arr instanceof Array)) {return false;}
+        if (!(arr instanceof Array)) {
+            return false;
+        }
         var obj = {};
         var sorted = arr.sort(function (date1, date2) {
             return dateToNumber(date1) - dateToNumber(date2);
@@ -516,9 +516,11 @@
         var me = this;
         min = dateToNumber(min);
         max = dateToNumber(max);
-        $('.table-condensed td.day').each(function (i, n) {
+        $('.table-condensed td.day').each(function () {
             var t = dateToNumber($(this).prop('title'));
-            if (isNaN(t)) {return;}
+            if (isNaN(t)) {
+                return;
+            }
             if (t >= min && t <= max) {
                 me.CACHE.currentStyle.push($(this));
                 $(this).addClass('pressed');
