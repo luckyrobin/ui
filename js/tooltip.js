@@ -3,11 +3,11 @@
         this.type =
             this.options =
                 this.enabled =
-                    this.$element = null;
-        this.timer = null;
+                    this.$element = null
+        this.timer = null
 
-        this.init('tooltip', element, options);
-    };
+        this.init('tooltip', element, options)
+    }
     /**
      * 基本参数设置
      * @param isautohide 是否自动关闭
@@ -23,54 +23,54 @@
         trigger: 'hover focus',
         container: false
 
-    };
+    }
 
     Tooltip.prototype.init = function (type, element, options) {
-        this.enabled = true;
-        this.type = type;
-        this.$element = $(element);
+        this.enabled = true
+        this.type = type
+        this.$element = $(element)
         this.options = this.getOptions(options);
 
         var triggers = this.options.trigger.split(' ');
 
         for (var i = triggers.length; i--;) {
-            var trigger = triggers[i];
+            var trigger = triggers[i]
 
             if (trigger == 'click') {
                 this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.generate, this));
             } else if (trigger != 'manual') {
-                var eventIn = trigger == 'hover' ? 'mouseenter' : 'focusin';
-                var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout';
+                var eventIn = trigger == 'hover' ? 'mouseenter' : 'focusin'
+                var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
                 var _this = this;
 
                 setTimeout(function () {
-                    _this.$element.on(eventIn + '.' + _this.type, _this.options.selector, $.proxy(_this.generate, _this));
+                    _this.$element.on(eventIn + '.' + _this.type, _this.options.selector, $.proxy(_this.generate, _this))
                 }, 0);
                 if (this.options.isautohide) {
-                    this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.destroy, this));
+                    this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.destroy, this))
                 }
             }
         }
 
-    };
+    }
 
 
     Tooltip.prototype.getDefaults = function () {
-        return Tooltip.DEFAULTS;
-    };
+        return Tooltip.DEFAULTS
+    }
 
     Tooltip.prototype.getOptions = function (options) {
-        options = $.extend({}, this.getDefaults(), options);
+        options = $.extend({}, this.getDefaults(), options)
 
         if (options.delay && typeof options.delay == 'number') {
             options.delay = {
                 show: options.delay,
                 hide: options.delay
-            };
+            }
         }
 
-        return options;
-    };
+        return options
+    }
 
     Tooltip.prototype.hasContent = function () {
         var obj_content = this.$element.siblings('.sptooltip-content');
@@ -79,7 +79,15 @@
         } else {
             return false;
         }
-    };
+    }
+
+    Tooltip.prototype.popup = function () {
+        this.generate();
+    }
+
+    Tooltip.prototype.popdown = function () {
+        this.destroy();
+    }
 
     Tooltip.prototype.show = function () {
         var $tip = this.tip();
@@ -94,16 +102,16 @@
          return;
          }*/
         if (!$("body").hasClass('sptooltip')) {
-            $("body").append($tip);
+            $("body").append($tip)
         } else {
             return;
         }
-    };
+    }
 
     Tooltip.prototype.generate = function () {
         clearTimeout(this.timer);
-        var _this = this,
-            eleHeight = this.$element.height(),
+        var _this = this;
+        eleHeight = this.$element.height(),
             oWidth = null,
             oHeight = null,
             resultTop = 0,
@@ -146,33 +154,25 @@
                 _this.destroy();
             }
         });
-    };
+    }
 
     Tooltip.prototype.destroy = function () {
         var _this = this;
         _this.timer = setTimeout(function () {
             _this.tip().remove();
         }, 30);
-    };
+    }
 
     Tooltip.prototype.tip = function () {
-        return this.$tip = this.$tip || $(this.options.template);
-    };
+        return this.$tip = this.$tip || $(this.options.template)
+    }
 
     $.fn.sptooltip = function (option) {
         var options = typeof option == 'object' && option;
-        return this.each(function () {
-            var $this = $(this);
-            //new Tooltip(this, options);
-            if (typeof option == 'string') {
-                new Tooltip(this)[option]();
-            } else {
-                new Tooltip(this, options);
-            }
-        });
-    };
+        return new Tooltip(this, options);
+    }
 
-})(jQuery);
+})(jQuery)
 
 /*edit log
  2014/04/24

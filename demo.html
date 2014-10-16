@@ -6,18 +6,18 @@
     <title>demo</title>
     <link rel="Stylesheet" type="text/css" href="css/ui.css">
     <style>
-        pre {
-            background: #eee;
-        }
+    pre {
+        background: #eee;
+    }
     </style>
 </head>
 
 <body style="height:2000px">
-<!--头部S-->
-<div class="container">
+    <!--头部S-->
+    <div class="container">
 
-    <div class="contents clearfix">
-        <a href="javascript:;" id="text" class="ml blue_link">弹窗</a>
+        <div class="contents clearfix">
+            <a href="javascript:;" id="text" class="ml blue_link">弹窗</a>
             <pre>
                     $("body").spmodal(
                         {
@@ -30,7 +30,7 @@
                         }
                     );
             </pre>
-        <a href="javascript:;" id="text02" class="ml blue_link">弹窗改变默认宽度</a>
+            <a href="javascript:;" id="text02" class="ml blue_link">弹窗改变默认宽度</a>
             <pre>
                     $("body").spmodal(
                         {
@@ -44,7 +44,7 @@
                         }
                     );
             </pre>
-        <a href="javascript:;" id="text03" class="ml blue_link">弹窗alert</a>
+            <a href="javascript:;" id="text03" class="ml blue_link">弹窗alert</a>
             <pre>
                     $("body").spmodal(
                         {
@@ -58,13 +58,13 @@
                         }
                     );
             </pre>
-        <a href="javascript:;" id="texttemplate" class="ml blue_link">弹窗改变默认模板</a>
+            <a href="javascript:;" id="texttemplate" class="ml blue_link">弹窗改变默认模板</a>
 
-        <div class="none" id="stocksure">
-            <div class="text-left">
-                <p class="ml25 mt30"><i class="spicon spicon-success-sizes mr"></i>此入库单已确认</p>
+            <div class="none" id="stocksure">
+                <div class="text-left">
+                    <p class="ml25 mt30"><i class="spicon spicon-success-sizes mr"></i>此入库单已确认</p>
+                </div>
             </div>
-        </div>
             <pre>
                 var temp = $("#stocksure").html();
                 $("body").spmodal(
@@ -86,134 +86,140 @@
                     }
                 );
             </pre>
-        <a href="javascript:;" id="textDOM" class="ml blue_link">弹窗DOM结构</a>
+            <a href="javascript:;" id="textDOM" class="ml blue_link">弹窗DOM结构</a>
 
-        <div class="textDOM01 none">
-            <h2>这里是任意DOM结构</h2>
+            <div class="textDOM01 none">
+                <h2>这里是任意DOM结构</h2>
 
-            <p>内容</p>
+                <p>内容</p>
 
-            <p>内容</p>
+                <p>内容</p>
 
-            <p>内容</p>
-        </div>
+                <p>内容</p>
+            </div>
             <pre>
                     $("body").spmodal(
                         {
                             title:"标题标题标题",
                             mode:"confirm",
-                            content: $(".textDOM01").html(),
+                            content: $(".textDOM01"),
                             ok:function(){
                                 alert("ok");
                             }
                         }
                     );
             </pre>
-        <div class="mt text-center">
-            <span class="tooltips-top">我是一个tips</span>
+            <div class="mt text-center">
+                <span class="tooltips-top">我是一个tips</span>
 
-            <div class="sptooltip-content none">
-                <div>
-                    <img src="https://octodex.github.com/images/kimonotocat.png" width="60" height="60" alt="">
+                <div class="sptooltip-content none">
+                    <div>
+                        <img src="https://octodex.github.com/images/kimonotocat.png" width="60" height="60" alt="">
 
-                    <p>这里可写任何<a href="http://www.baidu.com">dom</a>
-                    </p>
+                        <p>这里可写任何<a href="http://www.baidu.com">dom</a>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
             <pre>
                 $(".tooltips-top").sptooltip();
             </pre>
-        <p class="mt text-center">
-            <span class="tooltips-bottom">我是一个上浮动tips</span>
-            <span class="sptooltip-content none">我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips</span>
-        </p>
+            <p class="mt text-center">
+                <span class="tooltips-bottom">我是一个上浮动tips</span>
+                <span class="sptooltip-content none">我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips我是一个tips</span>
+            </p>
             <pre>
                 $(".tooltips-bottom").sptooltip({
                      placement: 'bottom'
                 });
             </pre>
-        <p class="mt text-center">
-            <span class="tooltips-right">我是一个右浮动tips</span>
-            <span class="sptooltip-content none">一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips</span>
-        </p>
+            <p class="mt text-center">
+                <span class="tooltips-right">我是一个右浮动tips</span>
+                <span class="sptooltip-content none">一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips</span>
+            </p>
             <pre>
                 $(".tooltips-right").sptooltip({
                      placement: 'right'
                 });
             </pre>
-        <p class="mt text-center">
-            <span class="tooltips-left">我是一个左浮动tips</span>
-            <span class="sptooltip-content none">一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips</span>
-        </p>
+            <p class="mt text-center">
+                <span class="tooltips-left">我是一个左浮动tips</span>
+                <span class="sptooltip-content none">一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips一个tips我是一个tips我是一个tips我是一个tips</span>
+            </p>
             <pre>
                 $(".tooltips-left").sptooltip({
                      placement: 'left'
                 });
             </pre>
+        </div>
+
     </div>
-
-</div>
-<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="js/modal.js"></script>
-<script type="text/javascript" src="js/tooltip.js"></script>
-<script type="text/javascript">
-    $(function () {
-        $("#text").click(function (event) {
-            $("body").spmodal({
-                title: "提示",
-                mode: "confirm",
-                content: "你会唱小星星吗？",
-                ok: function () {
-                    alert("ok");
-                }
-            });
+    <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="js/modal.js"></script>
+    <script type="text/javascript" src="js/tooltip.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var ds = $("body").spmodal({
+            title: "提示",
+            mode: "confirm",
+            content: "你会唱小星星吗？",
+            ok: function() {
+                alert("ok");
+            }
+        });
+        $("#text").click(function(event) {
+            ds.show();
         });
 
-        $("#text02").click(function (event) {
-            $("body").spmodal({
-                title: "600宽度",
-                width: 600,
-                mode: "confirm",
-                content: "你会唱小星星吗？",
-                ok: function () {
-                    alert("ok");
-                }
-            });
+        var dh = $("body").spmodal({
+            title: "600宽度",
+            width: 600,
+            mode: "confirm",
+            content: "你会唱小星星吗？",
+            ok: function() {
+                alert("ok");
+            }
         });
 
-        $("#text03").click(function (event) {
-            $("body").spmodal({
-                title: "警告",
-                mode: "alert",
-                okvalue: "文字可改变",
-                content: "你会唱小星星吗？",
-                ok: function () {
-                    alert("ok");
-                }
-            });
+        $("#text02").click(function(event) {
+            dh.show();
         });
 
-        $("#texttemplate").on('click', function (event) {
-            var temp = $("#stocksure").html();
-            $("body").spmodal({
-                title: "我是一个标题",
-                mode: "alert",
-                okvalue: "知道了",
-                content: temp,
-                template: "<div class='sppopwin'>" + "<div class='sppopwin-out'>" + "<div class='sppopwin-in'>" + "<span class='sppopwin-close sppopwin-action-c'>" + "</span>" + "<div class='sppopwin-content'>" + "</div>" + "</div>" + "</div>" + "</div>"
-            });
+        var dx = $("body").spmodal({
+            title: "警告",
+            mode: "alert",
+            okvalue: "文字可改变",
+            content: "你会唱小星星吗？",
+            ok: function() {
+                alert("ok");
+            }
         });
 
-        $("#textDOM").click(function (event) {
-            $("body").spmodal({
-                title: "标题标题标题",
-                mode: "confirm",
-                content: $(".textDOM01").html(),
-                ok: function () {
-                    alert("ok");
-                }
-            });
+        $("#text03").click(function(event) {
+            dx.show();
+        });
+        var d0 = $("body").spmodal({
+            title: "我是一个标题",
+            mode: "alert",
+            okvalue: "知道了",
+            content: $("#stocksure"),
+            template: "<div class='sppopwin'>" + "<div class='sppopwin-out'>" + "<div class='sppopwin-in'>" + "<span class='sppopwin-close sppopwin-action-c'>" + "</span>" + "<div class='sppopwin-content'>" + "</div>" + "</div>" + "</div>" + "</div>"
+        });
+
+        $("#texttemplate").click(function(event) {
+            d0.show();
+        });
+        var d = $("body").spmodal({
+            title: "标题标题标题",
+            mode: "confirm",
+            content: $(".textDOM01"),
+            ok: function() {
+                alert("ok");
+            }
+        });
+
+        $("#textDOM").click(function(event) {
+            d.show();
         });
         $(".tooltips-top").sptooltip();
         $(".tooltips-bottom").sptooltip({
@@ -226,7 +232,7 @@
             placement: 'left'
         });
     })
-</script>
+    </script>
 </body>
 
 </html>
