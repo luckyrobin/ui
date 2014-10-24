@@ -56,21 +56,24 @@
         this.$element = $(element);
         this.options = this.getOptions(options);
         //this.id === undefined ? this.id = (50 * Math.random() | 0) : this.id;
-        this.content = this.DOMCuttor();
+        this.content = this.DOMCuttor(this.options.content);
     };
 
-    Modal.prototype.DOMCuttor = function() {
+    Modal.prototype.DOMCuttor = function(data) {
         var me = this;
         var content = '';
-        if (this.options.content instanceof Object) {
-            content = this.options.content.html();
-            this.options.content.remove();
-        } else if (typeof this.options.content === 'string') {
-            content = this.options.content;
+        if (data instanceof Object) {
+            content = data.html();
+            data.remove();
+        } else if (typeof data === 'string') {
+            content = data;
         }
         return content;
-    }
+    };
 
+    Modal.prototype.setContent = function(data) {
+        this.options.content = this.DOMCuttor(data);
+    };
 
     Modal.prototype.show = function() {
         var toolbar = null;
@@ -79,7 +82,7 @@
         } else if (this.options.mode == 'alert') {
             toolbar = "<div class='text-center'>" + this.content + "</div><p class='sppopwin-bottom-toolbar'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button></p>";
         } else {
-            toolbar = "<div class='text-center'>" + this.options.content + "</div>";
+            toolbar = "<div class='text-center'>" + this.content + "</div>";
         }
         this.pop(toolbar);
     };
@@ -123,7 +126,7 @@
 
     Modal.prototype.resize = function() {
         var _popupWidth = this.options.width;
-        var _popupHeight = this.options.height;
+        var _popupHeight = this.tip().height();
         var _winScrollTop = $(window).scrollTop();
         var _winHeight = $(window).height();
         var _docHeight = $(document).height();
@@ -148,12 +151,12 @@
     Modal.prototype.pop = function(toolbar) {
         var _this = this;
         var $tip = _this.tip();
-        var tempObj = _this.resize();
 
         var setContent = toolbar;
         $tip.find(".sppopwin-content").html(setContent).end().find(".sppopwin-title > h3").text(_this.options.title);
 
         $("body").append($tip);
+        var tempObj = _this.resize();
         $tip.fadeIn(300);
         if (_this.options.maskLayer) {
             if ($('.popup_mask').length === 0) {
