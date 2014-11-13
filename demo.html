@@ -97,6 +97,11 @@
 
                 <p>内容</p>
             </div>
+            <div class="textDOM02 none">
+                <h2>lalala</h2>
+                <p>内容</p>
+                <p><button id="c">close</button></p>
+            </div>
             <pre>
                     $("body").spmodal(
                         {
@@ -109,6 +114,8 @@
                         }
                     );
             </pre>
+            <a href="javascript:;" id="textDOM2" class="ml blue_link">改变DOM结构</a>
+
             <div class="mt text-center">
                 <span class="tooltips-top">我是一个tips</span>
 
@@ -159,7 +166,7 @@
     <script type="text/javascript" src="js/tooltip.js"></script>
     <script type="text/javascript">
     $(function() {
-        var ds = $("body").spmodal({
+       /* var ds = $("body").spmodal({
             title: "提示",
             mode: "confirm",
             content: "你会唱小星星吗？",
@@ -208,7 +215,7 @@
 
         $("#texttemplate").click(function(event) {
             d0.show();
-        });
+        });*/
         var d = $("body").spmodal({
             title: "标题标题标题",
             mode: "confirm",
@@ -220,6 +227,14 @@
 
         $("#textDOM").click(function(event) {
             d.show();
+        });
+
+        $("#textDOM2").click(function(event){
+            d.setContent($(".textDOM02"));
+            d.show();
+            $("#c").one('click',function(){
+                d.close();
+            })
         });
         $(".tooltips-top").sptooltip();
         $(".tooltips-bottom").sptooltip({

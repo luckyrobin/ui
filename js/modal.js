@@ -63,7 +63,13 @@
         var me = this;
         var content = '';
         if (data instanceof Object) {
-            content = data.html();
+            var temp = data.html();
+            console.log(temp);
+            if (temp === '' || temp.length === 0) {
+                content = outerHTML(data, document);
+            } else {
+                content = temp;
+            }
             data.remove();
         } else if (typeof data === 'string') {
             content = data;
@@ -72,7 +78,8 @@
     };
 
     Modal.prototype.setContent = function(data) {
-        this.options.content = this.DOMCuttor(data);
+        if (data.length === 0) return;
+        this.content = this.DOMCuttor(data);
     };
 
     Modal.prototype.show = function() {
@@ -183,6 +190,19 @@
         $(window).bind('resize.popresize', function() {
             _this.resize();
         });
+    };
+
+    function outerHTML(el, doc) {
+        var temp = document.createElement('div');
+        el = el.get(0);
+        if ('outerHTML' in el) {
+            return el.outerHTML;
+        } else {
+            temp.innerHTML = '';
+            var dtemp = (doc && doc.createElement('div')) || temp;
+            dtemp.appendChild(el.cloneNode(true));
+            return dtemp.innerHTML;
+        }
     };
 
     $.fn.spmodal = function(option) {
