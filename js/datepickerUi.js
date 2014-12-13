@@ -17,7 +17,9 @@
         daypanel: 1,
         startLimitDate: null, //禁用传入日期之后的所有日期,如果不传入任何值则默认为当天
         endLimitDate: null, //禁用传入日期之前的所有日期
-        callbackFun: '' //选择后回调方法
+        callbackFun: '', //选择后回调方法
+        trigger: 'input',  //弹出日历控件方式  input | auto
+        datejson: null
     };
 
     Calendar.prototype.init = function (type, options) {
@@ -39,8 +41,11 @@
         }
 
         //初始化input，并且绑定事件
-        me.inputReady();
-
+        if (me.options.trigger == 'auto') {
+            me.calendarShow();
+        } else if (me.options.trigger == 'input') {
+            me.inputReady();
+        }
     };
 
     //混合config
@@ -114,13 +119,15 @@
                 loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
         }
 
-        //绑定document关闭事件
-        $(document).on('click.clearDom', function (event) {
-            var elem = $(event.target);
-            if (elem.closest('.' + me.options.rootNode + '').length === 0 && elem.closest(me.$element).length === 0 && elem.closest('*[data-trigger = "spcalendar"]').length === 0) {
-                me.calendarClose();
-            }
-        });
+        if (me.options.trigger !== 'auto') {
+            //绑定document关闭事件
+            $(document).on('click.clearDom', function (event) {
+                var elem = $(event.target);
+                if (elem.closest('.' + me.options.rootNode + '').length === 0 && elem.closest(me.$element).length === 0 && elem.closest('*[data-trigger = "spcalendar"]').length === 0) {
+                    me.calendarClose();
+                }
+            });
+        }
 
         //动态绑定日期单元格事件
         dateboxFrame.delegate('td.day', 'click', function (event) {
@@ -308,7 +315,7 @@
                 if (reg.test(data_Date[k].modal)) {
                     tempString = '';
                 }
-                templateArray.push('<td class="day ' + data_Date[k].modal + '" title="' + tempString + '">' + data_Date[k].date + '</td>');
+                templateArray.push('<td class="day ' + data_Date[k].modal + '" title="' + tempString + '"><p>' + data_Date[k].date + '</p><p>' + data_Date[k].spdate + '</p></td>');
                 k++;
             }
             templateArray.push('</tr>');
