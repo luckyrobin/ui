@@ -114,7 +114,10 @@
             radio: true
         });
         $(".date8").spcalendar({
-            weekStart: 1
+            weekStart: 1,
+            callbackFun:function(r){
+            	alert(r)
+            }
         });
         $(".date9").spcalendar({
             daypanel: 3

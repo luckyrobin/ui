@@ -79,7 +79,7 @@
             boxTop = startInput.offset().top + startInput.outerHeight(),
             boxLeft = startInput.offset().left,
             dateboxFrame = evalJquery('<div class="' + me.options.rootNode + '"></div>');
-        //boxHtml = evalDom('<div class="' + me.options.rootNode + '" style="top:'+boxTop+'px;left:'+boxLeft+'px">');
+
         if (!me.options.radio) {
             var timeBlock = [];
             endInput = inputDom.eq(1);
@@ -146,7 +146,7 @@
                 me.CACHE.currentStyle.push($(this));
                 me.CACHE.currentStyle[0].addClass('pressed');
                 startInput.val(changedDate);
-                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun();
+                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun(changedDate);
             } else {
                 //选择区间
                 if (me.CACHE.currentStyle.length >= 2) {
@@ -167,7 +167,7 @@
                     endInput.val(mDate.max);
                     completionAreaStyle.call(me, mDate.min, mDate.max);
                     timeBlock.length = 0;
-                    (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun();
+                    (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun([mDate.min,mDate.max]);
                 }
             }
         });
