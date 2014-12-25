@@ -21,6 +21,7 @@
         template: '<div class="sptooltip"><div class="sptooltip-arrow"><em>◆</em><i>◆</i></div><div class="sptooltip-inner"></div></div>',
         html: false,
         trigger: 'hover focus',
+        beforeload: false,
         container: false
 
     }
@@ -37,20 +38,29 @@
             var trigger = triggers[i]
 
             if (trigger == 'click') {
-                this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.generate, this));
+                this.$element.on('click.' + this.type, this.options.selector, function(){$.proxy(this.generate, this)});
             } else if (trigger != 'manual') {
                 var eventIn = trigger == 'hover' ? 'mouseenter' : 'focusin'
                 var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
                 var _this = this;
 
                 setTimeout(function () {
-                    _this.$element.on(eventIn + '.' + _this.type, _this.options.selector, $.proxy(_this.generate, _this))
+                    _this.$element.on(eventIn + '.' + _this.type, _this.options.selector, function(){
+                        if(_this.options.beforeload){
+                            var Tooltip = _this;
+                            var c = '('+_this.options.beforeload+')'+'()';
+                            eval(c);
+                            return false;
+                        };
+                        _this.generate();
+                    })
                 }, 0);
                 if (this.options.isautohide) {
                     this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.destroy, this))
                 }
             }
         }
+
 
     }
 
@@ -116,7 +126,7 @@
             oHeight = null,
             resultTop = 0,
             resultLeft = 0;
-
+          
         this.show();
 
         if (this.hasContent()) {
@@ -188,4 +198,7 @@
  1.加入了左右方向箭头。
  2.绑定延迟事件。
  3.加入了isautohide
+
+ 2014/11/13
+ 1.添加了beforeload事件
  */

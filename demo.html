@@ -238,7 +238,10 @@
         });
         $(".tooltips-top").sptooltip();
         $(".tooltips-bottom").sptooltip({
-            placement: 'bottom'
+            placement: 'bottom',
+            beforeload: function(){
+                Tooltip.popup();
+            }
         });
         $(".tooltips-right").sptooltip({
             placement: 'right'

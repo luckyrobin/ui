@@ -2,7 +2,7 @@
     'use strict';
     function DateCore(config) {
         this.config = config;
-        this.WEEKORDER = [0,6,5,4,3,2,1];
+        this.WEEKORDER = [0, 6, 5, 4, 3, 2, 1];
         this.init();
         //console.log(config);
     }
@@ -34,28 +34,45 @@
         var startLimitDate = me.config.startLimitDate;
         var endLimitDate = me.config.endLimitDate;
         var curDate = 0;
-        var weekStart = me.WEEKORDER[me.config.weekStart-1];
+        var weekStart = me.WEEKORDER[me.config.weekStart - 1];
+
+        //載入動態數據
+        var datejson = {};
+
+        for (var spdate in this.config.datejson) {
+            var tempArr = spdate.split('-');
+            if (tempArr[0] == year && tempArr[1] == month) {
+                datejson[tempArr[2]] = this.config.datejson[spdate];
+            }
+        }
+
         if (startLimitDate !== null || endLimitDate !== null) {
             startLimitDate = hasLimitExec.call(me, startLimitDate);
             endLimitDate = hasLimitExec.call(me, endLimitDate);
         }
-        for (var i = firstDay+weekStart-1, startDate = 1; i < dateArray.length; i++) {
+        for (var i = firstDay + weekStart - 1, startDate = 1; i < dateArray.length; i++) {
             if (startDate > monthDayNum) {
                 startDate = 1;
                 loop = true;
             }
-
             !loop ? dateArray[i] = {
                 'date': startDate++,
-                'modal': ''
+                'modal': '',
+                'spdate': ''
             } : dateArray[i] = {
                 'date': startDate++,
-                'modal': 'new'
+                'modal': 'new',
+                'spdate': ''
             };
-
 
             if (me.currentDate.year === year && me.currentDate.month === month && !loop && me.currentDate.date === startDate - 1) {
                 dateArray[i].modal += ' active';
+            }
+
+            for (var spdate in datejson) {
+                if (!loop && startDate - 1 == spdate) {
+                    dateArray[i].spdate = datejson[spdate];
+                }
             }
 
             curDate = dateToNumber(year + '-' + autoCompletion(month) + '-' + autoCompletion(dateArray[i].date));
@@ -72,10 +89,11 @@
                 dateArray[i].modal += ' disabled';
             }
         }
-        for (var j = firstDay+weekStart-2, startDate = monthDays(year, (month - 2) < 0 ? 11 : (month - 2)); j >= 0; j--) {
+        for (var j = firstDay + weekStart - 2, startDate = monthDays(year, (month - 2) < 0 ? 11 : (month - 2)); j >= 0; j--) {
             dateArray[j] = {
                 'date': startDate--,
-                'modal': 'old'
+                'modal': 'old',
+                'spdate': ''
             };
         }
         return dateArray;

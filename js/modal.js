@@ -32,14 +32,14 @@
         cancelvalue: '取消',
         cancel: function() {},
         callback: function() {},
-        template: "<div class='sppopwin'>" +
-            "<div class='sppopwin-out'>" +
-            "<div class='sppopwin-in'>" +
-            "<div class='sppopwin-title'>" +
+        template: "<div class='yhdbk-popwin'>" +
+            "<div class='yhdbk-popwin-out'>" +
+            "<div class='yhdbk-popwin-in'>" +
+            "<div class='yhdbk-popwin-title'>" +
             "<h3></h3>" +
-            "<span class='sppopwin-close sppopwin-action-c'>关闭</span>" +
+            "<span class='yhdbk-popwin-close yhdbk-popwin-action-c'>关闭</span>" +
             "</div>" +
-            "<div class='sppopwin-content'></div>" +
+            "<div class='yhdbk-popwin-content'></div>" +
             "</div>" +
             "</div>" +
             "</div>"
@@ -64,7 +64,6 @@
         var content = '';
         if (data instanceof Object) {
             var temp = data.html();
-            console.log(temp);
             if (temp === '' || temp.length === 0) {
                 content = outerHTML(data, document);
             } else {
@@ -85,9 +84,9 @@
     Modal.prototype.show = function() {
         var toolbar = null;
         if (this.options.mode == 'confirm') {
-            toolbar = "<div class='text-center'>" + this.content + "</div><p class='sppopwin-bottom-toolbar'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button><button class='spbtn spbtn-cancel sppopwin-action-c ml'>" + this.options.cancelvalue + "</button></p>";
+            toolbar = "<div class='text-center'>" + this.content + "</div><p class='yhdbk-popwin-bottom-toolbar'><button class='spbtn spbtn-sure yhdbk-popwin-action-s'>" + this.options.okvalue + "</button><button class='spbtn spbtn-cancel yhdbk-popwin-action-c ml'>" + this.options.cancelvalue + "</button></p>";
         } else if (this.options.mode == 'alert') {
-            toolbar = "<div class='text-center'>" + this.content + "</div><p class='sppopwin-bottom-toolbar'><button class='spbtn spbtn-sure sppopwin-action-s'>" + this.options.okvalue + "</button></p>";
+            toolbar = "<div class='text-center'>" + this.content + "</div><p class='yhdbk-popwin-bottom-toolbar'><button class='spbtn spbtn-sure yhdbk-popwin-action-s'>" + this.options.okvalue + "</button></p>";
         } else {
             toolbar = "<div class='text-center'>" + this.content + "</div>";
         }
@@ -160,7 +159,7 @@
         var $tip = _this.tip();
 
         var setContent = toolbar;
-        $tip.find(".sppopwin-content").html(setContent).end().find(".sppopwin-title > h3").text(_this.options.title);
+        $tip.find(".yhdbk-popwin-content").html(setContent).end().find(".yhdbk-popwin-title > h3").text(_this.options.title);
 
         $("body").append($tip);
         var tempObj = _this.resize();
@@ -176,12 +175,12 @@
             }
         }
         _this.options.callback();
-        $tip.find(".sppopwin-action-c").on("click", function() {
+        $tip.find(".yhdbk-popwin-action-c").on("click", function() {
             var fn = _this.options.cancel;
             return typeof fn !== 'function' || fn.call(this) !== false ?
                 _this.close() : this;
         });
-        $tip.find(".sppopwin-action-s").on("click", function() {
+        $tip.find(".yhdbk-popwin-action-s").on("click", function() {
             var fn = _this.options.ok;
             return typeof fn !== 'function' || fn.call(this) !== false ?
                 _this.close() : this;
