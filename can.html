@@ -115,8 +115,8 @@
         });
         $(".date8").spcalendar({
             weekStart: 1,
-            callbackFun:function(r){
-            	alert(r)
+            callbackFun: function (r) {
+                alert(r)
             },
             datejson: {
                 '2015-01-01': "元旦",
@@ -142,7 +142,7 @@
             endLimitDate: '2014-09-02'
         });
         var obj = $(".date12").spcalendar({daypanel: 3});
-        $(".tab li").on('click',function(){
+        $(".tab li").on('click', function () {
             $(this).addClass('cur').siblings('li').removeClass('cur');
             obj.calendarShow($(this).data('mode'));
         });

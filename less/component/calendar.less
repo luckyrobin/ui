@@ -1,122 +1,124 @@
 .calenderBox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #efefef;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  .calenderInner {
+    &:after {
+      display: block;
+      content: ".";
+      height: 0;
+      visibility: hidden;
+      clear: both;
+      font-size: 0;
+      line-height: 0;
+    }
+  ;
+  }
+  .table-condensed {
+    float: left;
+    max-width: 100%;
+    background-color: transparent;
+    border-spacing: 0;
+    padding: 0 5px;
+    text-align: center;
+    thead {
+      background-color: #fafafa;
+      tr {
+
+      }
+      th {
+        padding: 6px;
+        &.dow {
+          font-weight: normal;
+          border-top: 1px solid #EFEFEF;
+          border-bottom: 1px solid #EFEFEF;
+        }
+        .switch {
+          &-year, &-month {
+            cursor: pointer;
+            &:hover {
+              color: #47b7e6;
+            }
+          ;
+          }
+        }
+      }
+    }
+    tbody {
+      td {
+        padding: 6px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        &:hover {
+          color: #47b7e6;
+          border-color: #47b7e6;
+        }
+        &.new, &.old, &.disabled {
+          color: #c7c7c7;
+          cursor: not-allowed;
+        }
+        &.active {
+          color: #47b7e6;
+        }
+        &.pressed {
+          background-color: #47b7e6;
+          color: #fff;
+        }
+        &.year {
+          padding: 10px;
+        }
+        &.month {
+          padding: 10px;
+        }
+      }
+    }
+  }
+  a.prev, a.next {
+    display: inline-block;
     position: absolute;
     top: 0;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    i {
+      display: inline-block;
+      position: relative;
+      top: 6px;
+      left: 10px;
+      width: 5px;
+      height: 9px;
+      background: url("../images/calendar.png") no-repeat;
+    }
+  }
+  a.prev {
     left: 0;
-    background-color: #fff;
-    border: 1px solid #efefef;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    .calenderInner{
-        &:after{
-            display: block;
-            content: ".";
-            height: 0;
-            visibility: hidden;
-            clear: both;
-            font-size: 0;
-            line-height: 0;
-        };
+    border-right: 1px solid #EFEFEF;
+    &:hover {
+      i {
+        background-position: -5px 0;
+      }
     }
-    .table-condensed {
-       float: left;
-       max-width: 100%;
-       background-color: transparent;
-       border-spacing: 0;
-       padding: 0 5px;
-        text-align: center;
-        thead {
-            background-color: #fafafa;
-            tr{
-
-            }
-            th {
-                padding: 6px;
-                &.dow{
-                	font-weight: normal;
-            	    border-top: 1px solid #EFEFEF;
-            		border-bottom: 1px solid #EFEFEF;
-                }
-                .switch{
-                    &-year,&-month{
-                        cursor: pointer;
-                        &:hover{
-                            color: #47b7e6;
-                        };
-                    }
-                }
-            }
-        }
-        tbody {
-            td {
-                padding: 6px;
-                border: 1px solid transparent;
-                cursor: pointer;
-                &:hover {
-                    color: #47b7e6;
-                    border-color: #47b7e6;
-                }
-                &.new,&.old,&.disabled{
-                    color: #c7c7c7;
-                    cursor: not-allowed;
-                }
-                &.active{
-                    color: #47b7e6;
-                }
-                &.pressed{
-                    background-color: #47b7e6;
-                    color: #fff;
-                }
-                &.year{
-                    padding: 10px; 
-                }
-                &.month{
-                    padding: 10px; 
-                }
-            }
-        }
+  }
+  a.next {
+    right: 0;
+    border-left: 1px solid #EFEFEF;
+    i {
+      background-position: 0 -9px;
     }
-    a.prev,a.next {
-        display: inline-block;
-        position: absolute;
-        top: 0;
-        width: 26px;
-        height: 26px;
-        cursor: pointer;
-        i{
-            display: inline-block;
-            position: relative;
-            top: 6px;
-            left: 10px;
-            width: 5px;
-            height: 9px;
-            background: url("../images/calendar.png") no-repeat;
-        }
+    &:hover {
+      i {
+        background-position: -5px -9px;
+      }
     }
-    a.prev{
-        left: 0;
-        border-right: 1px solid #EFEFEF;
-        &:hover{
-            i{
-                background-position:-5px 0;
-            }
-        }
-    }
-    a.next {
-        right: 0;
-        border-left: 1px solid #EFEFEF;
-        i{
-            background-position:0 -9px;
-        }
-        &:hover{
-            i{
-                background-position:-5px -9px;
-            }
-        }
-    }
+  }
 }
 
-.self-define{
-    color: red;
+.self-define {
+  color: red;
 }
