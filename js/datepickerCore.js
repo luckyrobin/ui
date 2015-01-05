@@ -72,6 +72,7 @@
             for (var spdate in datejson) {
                 if (!loop && startDate - 1 == spdate) {
                     dateArray[i].spdate = datejson[spdate];
+                    delete datejson[spdate];
                 }
             }
 

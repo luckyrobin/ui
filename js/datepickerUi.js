@@ -15,11 +15,13 @@
         weekStart: 7,
         radio: false,
         daypanel: 1,
+        defaultType: 'date',
         startLimitDate: null, //禁用传入日期之后的所有日期,如果不传入任何值则默认为当天
         endLimitDate: null, //禁用传入日期之前的所有日期
         callbackFun: '', //选择后回调方法
         trigger: 'input',  //弹出日历控件方式  input | auto
-        datejson: null
+        datejson: null,  //自定义日期数据  格式 { '2015-01-01': "元旦"}
+        initdate: '' //控件初始化日期  默认今天
     };
 
     Calendar.prototype.init = function (type, options) {
@@ -91,10 +93,13 @@
         $(inputDom).last().after(dateboxFrame);
 
         //载入日期模板
+        if (!!me.options.initdate) {
+            var initdate = me.options.initdate.split('-');
+        }
         var DateCore = new me.DateCore(me.options);
-        var curYear = DateCore.currentDate.year,
-            curMonth = DateCore.currentDate.month,
-            curDate = DateCore.currentDate.date;
+        var curYear = (initdate && initdate[0]) || DateCore.currentDate.year,
+            curMonth = (initdate && initdate[1]) || DateCore.currentDate.month,
+            curDate = (initdate && initdate[2]) || DateCore.currentDate.date;
         var changedYear = curYear,
             changedMonth = curMonth,
             changedDate = curDate;
@@ -105,7 +110,7 @@
             curDate = parseInt(aDateSplit[2], 10);
         }
 
-        switch (mode) {
+        switch (mode || me.options.defaultType) {
             case 'date':
                 loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
                 break;
@@ -146,7 +151,7 @@
                 me.CACHE.currentStyle.push($(this));
                 me.CACHE.currentStyle[0].addClass('pressed');
                 startInput.val(changedDate);
-                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun();
+                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun(changedDate);
             } else {
                 //选择区间
                 if (me.CACHE.currentStyle.length >= 2) {
@@ -167,7 +172,7 @@
                     endInput.val(mDate.max);
                     completionAreaStyle.call(me, mDate.min, mDate.max);
                     timeBlock.length = 0;
-                    (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun();
+                    (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun([mDate.min, mDate.max]);
                 }
             }
         });
@@ -237,8 +242,8 @@
         }
 
         calenderInner.push('</div>');
-        calenderInner.push('<a class="prev"></a>');
-        calenderInner.push('<a class="next"></a>');
+        calenderInner.push('<a class="prev"><i></i></a>');
+        calenderInner.push('<a class="next"><i></i></a>');
 
 
         if (dateboxFrame.contents().length !== 0) {
@@ -315,7 +320,7 @@
                 if (reg.test(data_Date[k].modal)) {
                     tempString = '';
                 }
-                templateArray.push('<td class="day ' + data_Date[k].modal + '" title="' + tempString + '"><p>' + data_Date[k].date + '</p><p>' + data_Date[k].spdate + '</p></td>');
+                templateArray.push('<td class="day ' + data_Date[k].modal + '" title="' + tempString + '"><p>' + data_Date[k].date + '</p><p class="self-define">' + data_Date[k].spdate + '</p></td>');
                 k++;
             }
             templateArray.push('</tr>');
@@ -371,8 +376,8 @@
         //生成年视图模板
         generateYearTemplate.call(me, calenderInner, DateCore, year);
         calenderInner.push('</div>');
-        calenderInner.push('<a class="prev"></a>');
-        calenderInner.push('<a class="next"></a>');
+        calenderInner.push('<a class="prev"><i></i></a>');
+        calenderInner.push('<a class="next"><i></i></a>');
 
         if (dateboxFrame.contents().length !== 0) {
             dateboxFrame.contents().remove();
@@ -421,8 +426,8 @@
         //生成月视图模板
         generateMonthTemplate.call(me, calenderInner, DateCore, year);
         calenderInner.push('</div>');
-        calenderInner.push('<a class="prev"></a>');
-        calenderInner.push('<a class="next"></a>');
+        calenderInner.push('<a class="prev"><i></i></a>');
+        calenderInner.push('<a class="next"><i></i></a>');
 
         if (dateboxFrame.contents().length !== 0) {
             dateboxFrame.contents().remove();

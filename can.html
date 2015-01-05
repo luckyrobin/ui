@@ -56,7 +56,7 @@
         .tab li.cur {
             background: pink;
             color: #fff;
-            border-color: #000;
+            border-color: #eee;
         }
     </style>
 </head>
@@ -95,9 +95,9 @@
     <div style="margin-top: 30px;">
         <h4>日期选项卡</h4>
         <ul class="tab clearfix" data-trigger="spcalendar">
-            <li>按月</li>
-            <li>按周</li>
-            <li class="cur">按日</li>
+            <li data-mode="month">按月</li>
+            <li data-mode="week">按周</li>
+            <li data-mode="date" class="cur">按日</li>
         </ul>
         <input type="text" class="ipt2_left date12" value=""/>
         <span class="space">--</span>
@@ -114,7 +114,19 @@
             radio: true
         });
         $(".date8").spcalendar({
-            weekStart: 1
+            weekStart: 1,
+            callbackFun:function(r){
+            	alert(r)
+            },
+            datejson: {
+                '2015-01-01': "元旦",
+                '2015-01-02': "xx节日1",
+                '2015-01-03': "xx节日2",
+                '2015-01-04': "xx节日3",
+                '2015-01-12': "xx节日4",
+                '2015-01-13': "xx节日5",
+                '2015-01-14': "xx节日6"
+            }
         });
         $(".date9").spcalendar({
             daypanel: 3
@@ -131,8 +143,9 @@
         });
         var obj = $(".date12").spcalendar({daypanel: 3});
         $(".tab li").on('click',function(){
-            obj.calendarShow('month');
-        })
+            $(this).addClass('cur').siblings('li').removeClass('cur');
+            obj.calendarShow($(this).data('mode'));
+        });
     })
 </script>
 </body>
