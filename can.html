@@ -144,7 +144,8 @@
         var obj = $(".date12").spcalendar({daypanel: 3});
         $(".tab li").on('click', function () {
             $(this).addClass('cur').siblings('li').removeClass('cur');
-            obj.calendarShow($(this).data('mode'));
+            obj.options.defaultType = $(this).data('mode');
+            obj.calendarShow();
         });
     })
 </script>

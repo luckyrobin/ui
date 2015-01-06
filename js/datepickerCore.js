@@ -17,7 +17,7 @@
             date: nowDate.getDate(),
             hour: nowDate.getHours(),
             minute: nowDate.getMinutes()
-        };
+        }
     };
 
     DateCore.prototype.Datepanel = function (year, month, date) {
@@ -46,6 +46,7 @@
             }
         }
 
+        //限制日期
         if (startLimitDate !== null || endLimitDate !== null) {
             startLimitDate = hasLimitExec.call(me, startLimitDate);
             endLimitDate = hasLimitExec.call(me, endLimitDate);
@@ -163,6 +164,29 @@
         return parseInt(String(year).charAt(String(year).length - 1), 10);
     }
 
+    DateCore.prototype.Weekpanel = function (year) {
+        var me = this;
+        year = parseInt(year, 10);
+        var weekArray = [];
+        var weekon = 0;
+        var weekoff = (me.config.weekStart === 7 ? 0 : me.config.weekStart);
+        for (var i = 0; i < 7; i++) {
+            if ((new Date(year, 0, i + 1)).getDay() == weekoff) {
+                weekon = i + 1;
+                break;
+            }
+        }
+        for (var j = 0; j < 53; j++) {
+            weekArray[j] = {
+                week: autoCompletion(j + 1),
+                weekdateStart: 0,
+                weekdateEnd: 1
+            }
+        }
+
+        return weekArray;
+    };
+
     /**
      * 获取月天数
      * @param year 年
@@ -210,8 +234,8 @@
         } else {
             return dateToNumber(limitexec);
         }
-
     }
+
 
     window.DateCore = DateCore;
 })(window);

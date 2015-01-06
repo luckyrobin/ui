@@ -63,7 +63,7 @@
             if (isExist.call(me)) {
                 me.calendarClose();
             } else {
-                me.calendarShow();
+                me.calendarShow(me.options.defaultType);
             }
         });
     };
@@ -110,7 +110,8 @@
             curDate = parseInt(aDateSplit[2], 10);
         }
 
-        switch (mode || me.options.defaultType) {
+        var memode = mode || me.options.defaultType;
+        switch (memode) {
             case 'date':
                 loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
                 break;
@@ -119,6 +120,9 @@
                 break;
             case 'year':
                 loadYear.call(me, dateboxFrame, DateCore, curYear);
+                break;
+            case 'week':
+                loadWeek.call(me, dateboxFrame, DateCore, curYear);
                 break;
             default :
                 loadDate.call(me, dateboxFrame, DateCore, curYear, curMonth, curDate);
@@ -141,40 +145,7 @@
             if (!changedDate) {
                 return false;
             }
-            //是否选择时间段
-            if (me.options.radio) {
-                //单选
-                if (me.CACHE.currentStyle.length) {
-                    clearAreaStyle.call(me);
-                    me.CACHE.currentStyle.length = 0;
-                }
-                me.CACHE.currentStyle.push($(this));
-                me.CACHE.currentStyle[0].addClass('pressed');
-                startInput.val(changedDate);
-                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun(changedDate);
-            } else {
-                //选择区间
-                if (me.CACHE.currentStyle.length >= 2) {
-                    clearAreaStyle.call(me);
-
-                    me.CACHE.currentStyle.length = 0;
-                }
-                me.CACHE.currentStyle.push($(this));
-                for (var i = 0; i < me.CACHE.currentStyle.length; i++) {
-                    me.CACHE.currentStyle[i].addClass('pressed');
-                }
-
-                //line
-                timeBlock.push(changedDate);
-                if (timeBlock.length >= 2) {
-                    var mDate = getDateCompared(timeBlock);
-                    startInput.val(mDate.min);
-                    endInput.val(mDate.max);
-                    completionAreaStyle.call(me, mDate.min, mDate.max);
-                    timeBlock.length = 0;
-                    (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun([mDate.min, mDate.max]);
-                }
-            }
+            myselect($(this), changedDate);
         });
 
         //动态绑定年面板单元格事件
@@ -196,8 +167,53 @@
             if (!changedMonth) {
                 return false;
             }
-            loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
+            if (memode !== 'month') {
+                loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
+            } else {
+                myselect($(this), splitStr.join('-'));
+            }
         });
+
+        /**
+         * 选择模式
+         * @param _this 当前对象
+         * @param pushresult 选择结果
+         */
+        function myselect(_this, pushresult) {
+            if (me.options.radio) {
+                //单选月
+                if (me.CACHE.currentStyle.length) {
+                    clearAreaStyle.call(me);
+                    me.CACHE.currentStyle.length = 0;
+                }
+                me.CACHE.currentStyle.push(_this);
+                me.CACHE.currentStyle[0].addClass('pressed');
+                startInput.val(pushresult);
+                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun(changedDate);
+            } else {
+                //选择区间
+                if (me.CACHE.currentStyle.length >= 2) {
+                    clearAreaStyle.call(me);
+
+                    me.CACHE.currentStyle.length = 0;
+                }
+                me.CACHE.currentStyle.push(_this);
+                for (var i = 0; i < me.CACHE.currentStyle.length; i++) {
+                    me.CACHE.currentStyle[i].addClass('pressed');
+                }
+
+                //line
+                timeBlock.push(pushresult);
+                if (timeBlock.length >= 2) {
+                    var mDate = getDateCompared(timeBlock);
+                    startInput.val(mDate.min);
+                    endInput.val(mDate.max);
+                    completionAreaStyle.call(me, mDate.min, mDate.max);
+                    timeBlock.length = 0;
+                    (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun([mDate.min, mDate.max]);
+                }
+            }
+        }
     };
 
     /**
@@ -434,6 +450,11 @@
         }
         dateboxFrame.append(calenderInner.join(''));
 
+        //选择后重绘区间样式
+        if (me.$element.eq(0).val() !== '') {
+            completionAreaStyle.call(me, me.$element.eq(0).val(), me.options.radio ? me.$element.eq(0).val() : me.$element.eq(1).val());
+        }
+
         //绑定翻页按钮事件
         var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
         dateBoxDOM.find('.next').one('click', function (event) {
@@ -447,10 +468,12 @@
         });
 
         //绑定切换视图事件
-        dateBoxDOM.find('.switch-year').one('click', function (event) {
-            event.stopPropagation();
-            loadYear.call(me, dateboxFrame, DateCore, year);
-        });
+        if (me.options.defaultType !== 'month') {
+            dateBoxDOM.find('.switch-year').one('click', function (event) {
+                event.stopPropagation();
+                loadYear.call(me, dateboxFrame, DateCore, year);
+            });
+        }
     }
 
     function generateMonthTemplate(templateArray, DateCore, year, month) {
@@ -474,6 +497,25 @@
         return templateArray;
     }
 
+    function loadWeek(dateboxFrame, DateCore, year) {
+        var me = this;
+        var calenderInner = evalDom('<div class="calenderInner">');
+        //生成周视图模板
+        generateWeekTemplate.call(me, calenderInner, DateCore, year);
+        calenderInner.push('</div>');
+
+        if (dateboxFrame.contents().length !== 0) {
+            dateboxFrame.contents().remove();
+        }
+        dateboxFrame.append(calenderInner.join(''));
+    }
+
+    function generateWeekTemplate(templateArray, DateCore, year) {
+        var me = this;
+        var data_Week = DateCore.Weekpanel(year);
+        //console.log(data_Week);
+        return templateArray;
+    }
     //TOOL
 
     /**
@@ -541,7 +583,7 @@
         var me = this;
         min = dateToNumber(min);
         max = dateToNumber(max);
-        $('.table-condensed td.day').each(function () {
+        $('.table-condensed td').each(function () {
             var t = dateToNumber($(this).prop('title'));
             if (isNaN(t)) {
                 return;
