@@ -174,6 +174,18 @@
             }
         });
 
+        //动态绑定周面板单元格事件
+        dateboxFrame.delegate('td.week', 'click', function (event) {
+            event.stopPropagation();
+            var splitStr = getCellDate($(this)).split('~');
+            console.log(splitStr);
+            if (memode !== 'week') {
+                loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
+            } else {
+                myselect($(this), splitStr);
+            }
+        });
+
         /**
          * 选择模式
          * @param _this 当前对象
@@ -181,7 +193,7 @@
          */
         function myselect(_this, pushresult) {
             if (me.options.radio) {
-                //单选月
+                //单选
                 if (me.CACHE.currentStyle.length) {
                     clearAreaStyle.call(me);
                     me.CACHE.currentStyle.length = 0;
@@ -189,7 +201,7 @@
                 me.CACHE.currentStyle.push(_this);
                 me.CACHE.currentStyle[0].addClass('pressed');
                 startInput.val(pushresult);
-                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun(changedDate);
+                (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun(pushresult);
             } else {
                 //选择区间
                 if (me.CACHE.currentStyle.length >= 2) {
@@ -205,7 +217,15 @@
                 //line
                 timeBlock.push(pushresult);
                 if (timeBlock.length >= 2) {
-                    var mDate = getDateCompared(timeBlock);
+                    var tempArray = [];
+                    for (var j = 0; j < timeBlock.length; j++) {
+                        if (timeBlock[0] instanceof Array) {
+                            for (var k = 0; k < timeBlock[j].length; k++) {
+                                tempArray.push(timeBlock[j][k]);
+                            }
+                        }
+                    }
+                    var mDate = getDateCompared(tempArray.length === 0 ? timeBlock : tempArray);
                     startInput.val(mDate.min);
                     endInput.val(mDate.max);
                     completionAreaStyle.call(me, mDate.min, mDate.max);
@@ -503,19 +523,53 @@
         //生成周视图模板
         generateWeekTemplate.call(me, calenderInner, DateCore, year);
         calenderInner.push('</div>');
+        calenderInner.push('<a class="prev"><i></i></a>');
+        calenderInner.push('<a class="next"><i></i></a>');
 
         if (dateboxFrame.contents().length !== 0) {
             dateboxFrame.contents().remove();
         }
         dateboxFrame.append(calenderInner.join(''));
+
+        //选择后重绘区间样式
+        if (me.$element.eq(0).val() !== '') {
+            completionAreaStyle.call(me, me.$element.eq(0).val(), me.options.radio ? me.$element.eq(0).val() : me.$element.eq(1).val());
+        }
+
+        //绑定翻页按钮事件
+        var dateBoxDOM = me.$element.last().nextAll('.' + me.options.rootNode + '');
+        dateBoxDOM.find('.next').one('click', function (event) {
+            event.stopPropagation();
+            loadWeek.call(me, dateboxFrame, DateCore, year + 1);
+        });
+
+        dateBoxDOM.find('.prev').one('click', function (event) {
+            event.stopPropagation();
+            loadWeek.call(me, dateboxFrame, DateCore, year - 1);
+        });
     }
 
     function generateWeekTemplate(templateArray, DateCore, year) {
         var me = this;
         var data_Week = DateCore.Weekpanel(year);
-        //console.log(data_Week);
+        templateArray.push('<table class="table-condensed">');
+        templateArray.push('<thead><tr><th colspan="18" class="switch"><span class="switch-year">' + year + me.$Lang.str_year + '</span></th></tr>');
+        templateArray.push('</thead>');
+        templateArray.push('<tbody>');
+        for (var x = 0, z = 0, p = 0; x < 3; x++) {
+            templateArray.push('<tr>');
+            for (var o = 0; o < 18; o++, p++) {
+                if (p >= data_Week.length) break;
+                templateArray.push('<td title="' + data_Week[p].weekdateStart + '~' + data_Week[p].weekdateEnd + '" class="week">' + (p + 1) + '</td>')
+            }
+            templateArray.push('</tr>');
+        }
+        templateArray.push('</tbody>');
+        templateArray.push('</table>');
+        console.log(templateArray);
         return templateArray;
     }
+
     //TOOL
 
     /**

@@ -172,18 +172,27 @@
         var weekoff = (me.config.weekStart === 7 ? 0 : me.config.weekStart);
         for (var i = 0; i < 7; i++) {
             if ((new Date(year, 0, i + 1)).getDay() == weekoff) {
-                weekon = i + 1;
+                weekon = year + '-01-' + autoCompletion(i + 1);
                 break;
             }
         }
+        var tempdate = weekon;
+        //console.log(nextDate('2015-01-31'));
         for (var j = 0; j < 53; j++) {
             weekArray[j] = {
-                week: autoCompletion(j + 1),
                 weekdateStart: 0,
-                weekdateEnd: 1
+                weekdateEnd: 0
+            };
+            for (var k = 0; k < 7; k++) {
+                if (k === 0) {
+                    weekArray[j].weekdateStart = tempdate;
+                } else if (k === 6) {
+                    weekArray[j].weekdateEnd = tempdate;
+                }
+                tempdate = nextDate(tempdate);
             }
+            if (dateToNumber(tempdate) > dateToNumber(year + '-12-31')) break;
         }
-
         return weekArray;
     };
 
@@ -234,6 +243,19 @@
         } else {
             return dateToNumber(limitexec);
         }
+    }
+
+    /**
+     * 返回下一天
+     * @param d such as'2015-01-05'
+     * @returns {string}
+     */
+    function nextDate(d) {
+        var d1 = d.replace(/\-/g, '\/');
+        var date = new Date(d1);
+        date.setDate(date.getDate() + 1);
+        date.setMonth(date.getMonth());
+        return date.getFullYear() + "-" + autoCompletion(date.getMonth() + 1) + "-" + autoCompletion(date.getDate());
     }
 
 
