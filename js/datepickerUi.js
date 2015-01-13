@@ -21,7 +21,8 @@
         callbackFun: '', //选择后回调方法
         trigger: 'input',  //弹出日历控件方式  input | auto
         datejson: null,  //自定义日期数据  格式 { '2015-01-01': "元旦"}
-        initdate: '' //控件初始化日期  默认今天
+        initdate: '', //控件初始化日期  默认今天
+        autoclose: false //选择后自动关闭
     };
 
     Calendar.prototype.init = function (type, options) {
@@ -178,7 +179,6 @@
         dateboxFrame.delegate('td.week', 'click', function (event) {
             event.stopPropagation();
             var splitStr = getCellDate($(this)).split('~');
-            console.log(splitStr);
             if (memode !== 'week') {
                 loadDate.call(me, dateboxFrame, DateCore, changedYear, changedMonth, changedDate);
             } else {
@@ -202,6 +202,9 @@
                 me.CACHE.currentStyle[0].addClass('pressed');
                 startInput.val(pushresult);
                 (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun(pushresult);
+                if (me.options.autoclose) {
+                    me.calendarClose();
+                }
             } else {
                 //选择区间
                 if (me.CACHE.currentStyle.length >= 2) {
@@ -231,6 +234,9 @@
                     completionAreaStyle.call(me, mDate.min, mDate.max);
                     timeBlock.length = 0;
                     (me.options.callbackFun && typeof(me.options.callbackFun) === 'function') && me.options.callbackFun([mDate.min, mDate.max]);
+                    if (me.options.autoclose) {
+                        me.calendarClose();
+                    }
                 }
             }
         }
@@ -432,7 +438,13 @@
             loadYear.call(me, dateboxFrame, DateCore, year - 10);
         });
     }
-
+    /**
+     * [generateYearTemplate description]
+     * @param  {Array}
+     * @param  {DateCore}
+     * @param  {num}
+     * @return {Array}
+     */
     function generateYearTemplate(templateArray, DateCore, year) {
         var me = this;
         var data_Year = DateCore.Yearpanel(year);
@@ -507,7 +519,7 @@
             templateArray.push('<tr>');
             for (var n = 0; n < 4; n++) {
                 var tempString = year + '-' + autoCompletion(data_Month[k]);
-                templateArray.push('<td class="month ' + 'waiting' + '" title="' + tempString + '">' + me.$Lang.months[data_Month[k] - 1] + '</td>');
+                templateArray.push('<td width="25%" class="month ' + 'waiting' + '" title="' + tempString + '">' + me.$Lang.months[data_Month[k] - 1] + '</td>');
                 k++;
             }
             templateArray.push('</tr>');
@@ -560,13 +572,12 @@
             templateArray.push('<tr>');
             for (var o = 0; o < 18; o++, p++) {
                 if (p >= data_Week.length) break;
-                templateArray.push('<td title="' + data_Week[p].weekdateStart + '~' + data_Week[p].weekdateEnd + '" class="week">' + (p + 1) + '</td>')
+                templateArray.push('<td title="' + data_Week[p].weekdateStart + '~' + data_Week[p].weekdateEnd + '" class="week ' + data_Week[p].modal + '">' + (p + 1) + '</td>')
             }
             templateArray.push('</tr>');
         }
         templateArray.push('</tbody>');
         templateArray.push('</table>');
-        console.log(templateArray);
         return templateArray;
     }
 

@@ -4,7 +4,6 @@
         this.config = config;
         this.WEEKORDER = [0, 6, 5, 4, 3, 2, 1];
         this.init();
-        //console.log(config);
     }
 
     DateCore.prototype.init = function () {
@@ -101,12 +100,6 @@
         return dateArray;
     };
 
-    DateCore.prototype.getDates = function (year, month, num) {
-        var me = this;
-        var monthDayNum = new Date(year, month, 0).getDate();
-
-        // return new Date(year,month-1);
-    };
 
     DateCore.prototype.Monthpanel = function (year, num) {
         var me = this;
@@ -118,7 +111,6 @@
         }
         return monthArray;
     };
-
 
     DateCore.prototype.Yearpanel = function (year, num) {
         var me = this;
@@ -170,6 +162,16 @@
         var weekArray = [];
         var weekon = 0;
         var weekoff = (me.config.weekStart === 7 ? 0 : me.config.weekStart);
+        var startLimitDate = me.config.startLimitDate;
+        var endLimitDate = me.config.endLimitDate;
+
+        //限制日期
+        if (startLimitDate !== null || endLimitDate !== null) {
+            startLimitDate = hasLimitExec.call(me, startLimitDate);
+            endLimitDate = hasLimitExec.call(me, endLimitDate);
+        }
+
+
         for (var i = 0; i < 7; i++) {
             if ((new Date(year, 0, i + 1)).getDay() == weekoff) {
                 weekon = year + '-01-' + autoCompletion(i + 1);
@@ -177,11 +179,12 @@
             }
         }
         var tempdate = weekon;
-        //console.log(nextDate('2015-01-31'));
+        var tempdateNumber = dateToNumber(tempdate);
         for (var j = 0; j < 53; j++) {
             weekArray[j] = {
                 weekdateStart: 0,
-                weekdateEnd: 0
+                weekdateEnd: 0,
+                modal: ''
             };
             for (var k = 0; k < 7; k++) {
                 if (k === 0) {
@@ -189,7 +192,19 @@
                 } else if (k === 6) {
                     weekArray[j].weekdateEnd = tempdate;
                 }
+                if ((startLimitDate && !endLimitDate) && (tempdateNumber > startLimitDate)) {
+                    weekArray[j].modal = ' disabled';
+                }
+
+                if ((endLimitDate && !startLimitDate) && (tempdateNumber < endLimitDate)) {
+                    weekArray[j].modal = ' disabled';
+                }
+
+                if ((startLimitDate && endLimitDate) && (tempdateNumber < startLimitDate && tempdateNumber > endLimitDate)) {
+                    weekArray[j].modal = ' disabled';
+                }
                 tempdate = nextDate(tempdate);
+                tempdateNumber = dateToNumber(tempdate);
             }
             if (dateToNumber(tempdate) > dateToNumber(year + '-12-31')) break;
         }

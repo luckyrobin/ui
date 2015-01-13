@@ -103,6 +103,12 @@
         <span class="space">--</span>
         <input type="text" class="ipt2_left date12" value=""/>
     </div>
+        <div style="margin-top: 30px;">
+        <h4>日期区间选择--自定义日期格式</h4>
+        <input type="text" class="ipt2_left date13" value=""/>
+        <span class="space">--</span>
+        <input type="text" class="ipt2_left date13" value=""/>
+    </div>
 </div>
 <script src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
 <script type="text/javascript" src="js/datepickerLan.js"></script>
@@ -111,9 +117,30 @@
 <script type="text/javascript">
     $(function () {
         $(".date7").spcalendar({
-            radio: true
+            radio: true,
+            autoclose: true
         });
-        $(".date8").spcalendar({
+        $(".date8").spcalendar();
+        $(".date9").spcalendar({
+            daypanel: 3
+        });
+        $(".date10").spcalendar({
+            daypanel: 3,
+            startLimitDate: ''
+            //endLimitDate:'2014-09-14'
+        });
+        $(".date11").spcalendar({
+            daypanel: 3,
+            startLimitDate: '2015-01-20',
+            endLimitDate: '2015-01-02'
+        });
+        var obj = $(".date12").spcalendar({daypanel: 3});
+        $(".tab li").on('click', function () {
+            $(this).addClass('cur').siblings('li').removeClass('cur');
+            obj.options.defaultType = $(this).data('mode');
+            obj.calendarShow();
+        });
+        $(".date13").spcalendar({
             weekStart: 1,
             callbackFun: function (r) {
                 alert(r)
@@ -127,25 +154,6 @@
                 '2015-01-13': "xx节日5",
                 '2015-01-14': "xx节日6"
             }
-        });
-        $(".date9").spcalendar({
-            daypanel: 3
-        });
-        $(".date10").spcalendar({
-            daypanel: 3,
-            startLimitDate: ''
-            //endLimitDate:'2014-09-14'
-        });
-        $(".date11").spcalendar({
-            daypanel: 3,
-            startLimitDate: '2014-09-20',
-            endLimitDate: '2014-09-02'
-        });
-        var obj = $(".date12").spcalendar({daypanel: 3});
-        $(".tab li").on('click', function () {
-            $(this).addClass('cur').siblings('li').removeClass('cur');
-            obj.options.defaultType = $(this).data('mode');
-            obj.calendarShow();
         });
     })
 </script>
