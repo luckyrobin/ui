@@ -16,7 +16,7 @@
             date: nowDate.getDate(),
             hour: nowDate.getHours(),
             minute: nowDate.getMinutes()
-        }
+        };
     };
 
     DateCore.prototype.Datepanel = function (year, month, date) {
@@ -26,6 +26,7 @@
         date = parseInt(date, 10);
         var myDate = new Date(year, month - 1);
         var firstDay = myDate.getDay();
+        firstDay === 0 ? firstDay=7:firstDay;
         var monthDayNum = monthDays(year, month - 1);
         var dateArray = new Array(42);
         var loop = false;
